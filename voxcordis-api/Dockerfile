@@ -17,7 +17,8 @@ COPY requirements.txt .
 
 # ── Install Python dependencies ───────────────────────────────────────
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
+    && pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir keras==3.12.2
 
 # ── Copy project files ────────────────────────────────────────────────
 COPY . .

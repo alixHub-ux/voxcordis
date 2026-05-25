@@ -4,6 +4,7 @@ python-multipart==0.0.9
 tensorflow==2.19.0
 tensorflow-hub==0.16.1
 librosa==0.10.2
+keras==3.12.2 
 numpy==1.26.4
 joblib==1.4.0
 pydantic==2.6.4
