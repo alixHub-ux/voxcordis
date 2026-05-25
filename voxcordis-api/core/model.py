@@ -6,12 +6,12 @@ from pathlib import Path
 
 # ── Paths ─────────────────────────────────────────────────────────────
 BASE_DIR    = Path(__file__).resolve().parent.parent
-MODEL_PATH  = BASE_DIR / "models" / "voxcordis_best.h5"
+MODEL_PATH  = BASE_DIR / "models" / "voxcordis_best.keras"
 SCALER_PATH = BASE_DIR / "models" / "scaler.pkl"
 
 # ── Load model and scaler once at startup ─────────────────────────────
 print("Loading Voxcordis model...")
-classifier = load_model(MODEL_PATH)
+classifier = load_model(MODEL_PATH, compile=False)
 print("Model loaded successfully.")
 
 print("Loading scaler...")
