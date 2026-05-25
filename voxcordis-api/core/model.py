@@ -6,7 +6,7 @@ from pathlib import Path
 
 # ── Paths ─────────────────────────────────────────────────────────────
 BASE_DIR    = Path(__file__).resolve().parent.parent
-MODEL_PATH  = BASE_DIR / "models" / "voxcordis_best.keras"
+MODEL_PATH  = BASE_DIR / "models" / "voxcordis_best.h5"
 SCALER_PATH = BASE_DIR / "models" / "scaler.pkl"
 
 # ── Load model and scaler once at startup ─────────────────────────────
