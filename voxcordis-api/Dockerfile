@@ -13,17 +13,20 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # ── Copy requirements first (Docker cache optimization) ───────────────
-COPY requirements.txt .
+# NOTE: Build context is the monorepo root (voxcordis/)
+# so files are prefixed with voxcordis-api/
+COPY voxcordis-api/requirements.txt .
 
 # ── Install Python dependencies ───────────────────────────────────────
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
 # ── Copy project files ────────────────────────────────────────────────
-COPY . .
+COPY voxcordis-api/ .
 
 # ── Expose port ───────────────────────────────────────────────────────
 EXPOSE 7860
 
 # ── Start the API ─────────────────────────────────────────────────────
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]
+ENV PORT=7860
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT}"]

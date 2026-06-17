@@ -1,42 +1,27 @@
+import logging
+
 import numpy as np
 import joblib
-import tensorflow as tf
 from tensorflow.keras.models import load_model
-from pathlib import Path
 
-# ── Paths ─────────────────────────────────────────────────────────────
-BASE_DIR    = Path(__file__).resolve().parent.parent
-MODEL_PATH  = BASE_DIR / "models" / "voxcordis_best.keras"
-SCALER_PATH = BASE_DIR / "models" / "scaler.pkl"
+from core.config import MODEL_PATH, SCALER_PATH
+
+logger = logging.getLogger(__name__)
 
 # ── Load model and scaler once at startup ─────────────────────────────
-print("Loading Voxcordis model...")
+logger.info("Loading Voxcordis model...")
 classifier = load_model(MODEL_PATH, compile=False)
-print("Model loaded successfully.")
+logger.info("Model loaded successfully.")
 
-print("Loading scaler...")
+logger.info("Loading scaler...")
 scaler = joblib.load(SCALER_PATH)
-print("Scaler loaded successfully.")
+logger.info("Scaler loaded successfully.")
 
 
 def predict(embedding: np.ndarray) -> dict:
-    """
-    Takes a 1024-dimensional embedding vector,
-    applies normalization and runs inference.
-
-    Returns:
-        dict with keys:
-            - class_id    : int   (0, 1 or 2)
-            - confidence  : float (0-100)
-            - probabilities : dict {Healthy, Laryngeal, Cardiac}
-    """
-    # ── Step 1 : Normalize embedding ──────────────────────────────────
-    embedding_scaled = scaler.transform(embedding)  # shape (1, 1024)
-
-    # ── Step 2 : Run inference ────────────────────────────────────────
+    embedding_scaled = scaler.transform(embedding)
     probabilities = classifier.predict(embedding_scaled, verbose=0)[0]
 
-    # ── Step 3 : Extract results ──────────────────────────────────────
     class_id   = int(np.argmax(probabilities))
     confidence = float(probabilities[class_id] * 100)
 
