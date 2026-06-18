@@ -3,6 +3,8 @@ import logging
 import numpy as np
 import joblib
 from tensorflow.keras.models import load_model
+import tensorflow as tf
+import keras
 
 from core.config import MODEL_PATH, SCALER_PATH
 
@@ -11,6 +13,12 @@ logger = logging.getLogger(__name__)
 # ── Load model and scaler once at startup ─────────────────────────────
 logger.info("Loading Voxcordis model...")
 classifier = load_model(MODEL_PATH, compile=False)
+
+print("================================")
+print("TensorFlow:", tf.__version__)
+print("Keras:", keras.__version__)
+print("TF Keras:", tf.keras.__version__)
+print("================================")
 logger.info("Model loaded successfully.")
 
 logger.info("Loading scaler...")
