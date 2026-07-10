@@ -30,11 +30,36 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.primary,
+      // ── AppBar avec titre en haut à gauche ─────────────────────────
+      appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        elevation: 0,
+        titleSpacing: 0,
+        leading: GestureDetector(
+          onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.splash),
+          child: Container(
+            margin: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withOpacity(0.25),
+            ),
+            child: const Icon(Icons.chevron_left, color: Colors.white, size: 22),
+          ),
+        ),
+        title: const Text(
+          'Content de te revoir',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
       body: Column(
         children: [
-          // ── Photo médicale avec clip courbe ──────────────────────────
+          // ── Photo médicale ────────────────────────────────────────
           SizedBox(
-            height: h * 0.40,
+            height: h * 0.33,
             width: double.infinity,
             child: Stack(
               fit: StackFit.expand,
@@ -42,52 +67,29 @@ class _LoginScreenState extends State<LoginScreen> {
                 Image.asset(
                   'assets/images/login_doctor.png',
                   fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(color: const Color(0xFFB07070)),
+                  errorBuilder: (_, __, ___) =>
+                      Container(color: const Color(0xFFB07070)),
                 ),
-      // Dégradé bordeaux du TOP vers le bas (couvre tout le haut)
+                // Dégradé bordeaux en haut
                 Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        AppColors.primary,                    // bordeaux plein tout en haut
-                        AppColors.primary.withOpacity(0.6),   // mi-chemin
-                        AppColors.primary.withOpacity(0.0),   // transparent en bas
+                        AppColors.primary,
+                        AppColors.primary.withOpacity(0.3),
+                        AppColors.primary.withOpacity(0.0),
                       ],
-                      stops: const [0.0, 0.35, 1.0],
-                    ),
-                  ),
-                ),
-      // Titre tout en haut
-                SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.splash),
-                          child: Container(
-                            width: 34, height: 34,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white.withOpacity(0.25),
-                            ),
-                            child: const Icon(Icons.chevron_left, color: Colors.white, size: 22),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        const Text('Content de te revoir',
-                            style: TextStyle(color: Colors.white,
-                                fontSize: 20, fontWeight: FontWeight.w700)),
-                      ],
+                      stops: const [0.0, 0.3, 1.0],
                     ),
                   ),
                 ),
               ],
             ),
           ),
-          // ── Formulaire ───────────────────────────────────────────────
+
+          // ── Formulaire ───────────────────────────────────────────
           Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
@@ -122,6 +124,27 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 32),
+
+                  // ── Message d'erreur ────────────────────────────
+                  if (auth.error != null) ...[
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.red.shade900.withOpacity(0.4),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.red.shade300),
+                      ),
+                      child: Text(
+                        auth.error!,
+                        style: const TextStyle(color: Colors.white, fontSize: 13),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+
+                  // ── Bouton Se connecter ─────────────────────────
                   SizedBox(
                     width: double.infinity, height: 56,
                     child: ElevatedButton(
@@ -199,18 +222,4 @@ class _PillField extends StatelessWidget {
       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
     ),
   );
-}
-
-class _BottomWaveClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path()
-      ..lineTo(0, size.height - 50)
-      ..quadraticBezierTo(size.width / 2, size.height + 30,
-          size.width, size.height - 50)
-      ..lineTo(size.width, 0)
-      ..close();
-    return path;
-  }
-  @override bool shouldReclip(_) => false;
 }

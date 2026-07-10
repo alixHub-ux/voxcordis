@@ -8,7 +8,9 @@ enum AnalysisState { idle, recording, analyzing, done, error }
 
 class AnalysisProvider extends ChangeNotifier {
   final AudioService _audio = AudioService();
-  final BackendService _backend = BackendService();
+  final BackendService backend; // partagé depuis main.dart
+
+  AnalysisProvider({required this.backend});
 
   AnalysisState _state = AnalysisState.idle;
   AnalysisResult? _lastResult;
@@ -19,8 +21,6 @@ class AnalysisProvider extends ChangeNotifier {
   AnalysisResult? get lastResult => _lastResult;
   List<AnalysisResult> get history => _history;
   String? get errorMsg => _errorMsg;
-
-  // ── Enregistrement ────────────────────────────────────────────────────────
 
   Future<bool> startRecording() async {
     final granted = await _audio.requestPermission();
@@ -36,8 +36,6 @@ class AnalysisProvider extends ChangeNotifier {
     return true;
   }
 
-  /// Arrête l'enregistrement puis envoie au backend Render (mode online uniquement).
-  /// Le mode offline TFLite est désactivé car incompatible avec la version du modèle.
   Future<void> stopAndAnalyze() async {
     _state = AnalysisState.analyzing;
     _errorMsg = null;
@@ -47,8 +45,7 @@ class AnalysisProvider extends ChangeNotifier {
       final wavPath = await _audio.stopRecording();
       if (wavPath == null) throw Exception('Fichier audio introuvable.');
 
-      // Vérifier la connectivité
-      final online = await _backend.isOnline();
+      final online = await backend.isOnline();
       if (!online) {
         throw Exception(
           'Connexion au serveur impossible.\n'
@@ -57,10 +54,8 @@ class AnalysisProvider extends ChangeNotifier {
         );
       }
 
-      // Envoyer au backend Render
-      final result = await _backend.predictOnline(wavPath);
+      final result = await backend.predictOnline(wavPath);
 
-      // Persistance locale
       final id = await DatabaseHelper.instance.insertResult(result);
       _lastResult = AnalysisResult(
         id: id,
@@ -77,13 +72,11 @@ class AnalysisProvider extends ChangeNotifier {
       _state = AnalysisState.done;
 
     } catch (e) {
-      _errorMsg = e.toString();
+      _errorMsg = e.toString().replaceFirst('Exception: ', '');
       _state = AnalysisState.error;
     }
     notifyListeners();
   }
-
-  // ── Historique ────────────────────────────────────────────────────────────
 
   Future<void> loadHistory() async {
     _history = await DatabaseHelper.instance.getAllResults();

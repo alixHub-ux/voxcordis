@@ -6,6 +6,7 @@ import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
 import 'providers/auth_provider.dart';
 import 'providers/analysis_provider.dart';
+import 'services/backend_service.dart';
 
 import 'screens/splash/splash_screen.dart';
 import 'screens/auth/login_screen.dart';
@@ -28,36 +29,40 @@ class VoxcordisApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Instance partagée du BackendService (token partagé entre Auth et Analysis)
+    final backendService = BackendService();
+
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => AnalysisProvider()),
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(backend: backendService),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => AnalysisProvider(backend: backendService),
+        ),
       ],
       child: MaterialApp(
         title: 'Voxcordis',
         theme: AppTheme.lightTheme,
         debugShowCheckedModeBanner: false,
-
-        // Localisation francaise (pour DateFormat etc.)
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: const [Locale('fr', 'FR')],
-
         initialRoute: AppRoutes.splash,
         routes: {
-          AppRoutes.splash:           (_) => const SplashScreen(),
-          AppRoutes.login:            (_) => const LoginScreen(),
-          AppRoutes.register:         (_) => const RegisterScreen(),
-          AppRoutes.dashboard:        (_) => const DashboardScreen(),
-          AppRoutes.recordingGuide:   (_) => const RecordingGuideScreen(),
-          AppRoutes.recording:        (_) => const RecordingScreen(),
-          AppRoutes.analysisLoading:  (_) => const AnalysisLoadingScreen(),
-          AppRoutes.result:           (_) => const ResultScreen(),
-          AppRoutes.history:          (_) => const HistoryScreen(),
-          AppRoutes.profile:          (_) => const ProfileScreen(),
+          AppRoutes.splash:          (_) => const SplashScreen(),
+          AppRoutes.login:           (_) => const LoginScreen(),
+          AppRoutes.register:        (_) => const RegisterScreen(),
+          AppRoutes.dashboard:       (_) => const DashboardScreen(),
+          AppRoutes.recordingGuide:  (_) => const RecordingGuideScreen(),
+          AppRoutes.recording:       (_) => const RecordingScreen(),
+          AppRoutes.analysisLoading: (_) => const AnalysisLoadingScreen(),
+          AppRoutes.result:          (_) => const ResultScreen(),
+          AppRoutes.history:         (_) => const HistoryScreen(),
+          AppRoutes.profile:         (_) => const ProfileScreen(),
         },
       ),
     );

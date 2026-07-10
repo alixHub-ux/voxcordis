@@ -115,7 +115,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             obscure: _obscure2,
                             onToggle: () => setState(() => _obscure2 = !_obscure2)),
                         const SizedBox(height: 32),
- 
+                        // Affichage de l'erreur
+                         if (auth.error != null)
+                          Container(
+                            width: double.infinity,
+                            margin: const EdgeInsets.only(bottom: 12),
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Colors.red.shade100,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.red.shade300),
+                            ),
+                            child: Text(
+                              auth.error!,
+                              style: TextStyle(color: Colors.red.shade800, fontSize: 13),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         // Bouton S'inscrire
                         SizedBox(
                           width: double.infinity, height: 56,
