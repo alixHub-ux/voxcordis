@@ -26,7 +26,7 @@ class ResultScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.background, elevation: 0,
         leading: GestureDetector(
-          onTap: () => Navigator.maybePop(context),
+          onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.dashboard),
           child: Container(
             margin: const EdgeInsets.all(8),
             decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white,

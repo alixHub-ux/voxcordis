@@ -84,7 +84,7 @@ class _RecordingScreenState extends State<RecordingScreen>
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: GestureDetector(
-          onTap: () => Navigator.maybePop(context),
+          onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.recordingGuide),
           child: Container(
             margin: const EdgeInsets.all(8),
             decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white,
@@ -100,7 +100,7 @@ class _RecordingScreenState extends State<RecordingScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Logo cœur qui se remplit au fur et à mesure
-            const HeartLogo(),
+            const HeartLogo(color: Colors.grey,),
             const SizedBox(height: 60),
 
             // Bouton micro avec halo animé

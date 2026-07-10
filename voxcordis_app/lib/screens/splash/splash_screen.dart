@@ -40,19 +40,9 @@ class _SplashScreenState extends State<SplashScreen>
                 const HeartLogo(),
                 const SizedBox(height: 32),
                 // "VOXCORDIS" avec X doré
-                RichText(
-                  text: const TextSpan(
-                    style: TextStyle(
-                      fontSize: 36, fontWeight: FontWeight.w800,
-                      letterSpacing: 3, color: Colors.white,
-                    ),
-                    children: [
-                      TextSpan(text: 'VOX'),
-                      TextSpan(text: 'X',
-                          style: TextStyle(color: Color(0xFFB8960C))),
-                      TextSpan(text: 'CORDIS'),
-                    ],
-                  ),
+                Image.asset(
+                  'assets/images/wordmark.png',
+                  height: 48,
                 ),
                 const SizedBox(height: 10),
                 Text('La Voix Du Coeur',

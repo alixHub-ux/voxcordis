@@ -38,7 +38,7 @@ class _AnalysisLoadingScreenState extends State<AnalysisLoadingScreen>
       appBar: AppBar(
         backgroundColor: AppColors.background, elevation: 0,
         leading: GestureDetector(
-          onTap: () => Navigator.maybePop(context),
+          onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.recording),
           child: Container(
             margin: const EdgeInsets.all(8),
             decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white,

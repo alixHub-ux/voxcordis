@@ -59,7 +59,7 @@ class _RecordingGuideScreenState extends State<RecordingGuideScreen> {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
               child: Row(children: [
                 GestureDetector(
-                  onTap: () => Navigator.maybePop(context),
+                  onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.dashboard),
                   child: Container(
                     width: 34, height: 34,
                     decoration: const BoxDecoration(shape: BoxShape.circle,

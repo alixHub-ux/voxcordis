@@ -55,5 +55,9 @@ flutter:
     - assets/models/yamnet_quantized.tflite
     - assets/models/voxcordis_model.tflite
     - assets/models/scaler_params.json
-    - assets/images/
+    - assets/images/wordmark.png
+    - assets/images/login_doctor.png
+    - assets/images/guide_calm.png
+    - assets/images/guide_phone.png
+    - assets/images/guide_voice.png
     - assets/images/logo_voxcordis.svg

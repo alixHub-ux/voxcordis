@@ -8,7 +8,7 @@ class VoxcordisBottomNav extends StatelessWidget {
 
   void _onTap(BuildContext context, int index) {
     if (index == currentIndex) return;
-    final routes = [AppRoutes.dashboard, AppRoutes.recording, AppRoutes.history, AppRoutes.profile];
+    final routes = [AppRoutes.dashboard, AppRoutes.recordingGuide, AppRoutes.history, AppRoutes.profile];
     Navigator.pushReplacementNamed(context, routes[index]);
   }
 

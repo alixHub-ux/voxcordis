@@ -5,8 +5,8 @@ class AppColors {
   AppColors._();
 
   // Couleur primaire : Bordeaux fonce
-  static const Color primary = Color(0xFF8B0000);
-  static const Color primaryLight = Color(0xFFB22222);
+  static const Color primary = Color(0xFF4E0000);
+  static const Color primaryLight = Color(0xFF8B0000);
 
   // Couleur secondaire : Beige chaud (fond d'ecran)
   static const Color background = Color(0xFFFAF6F0);

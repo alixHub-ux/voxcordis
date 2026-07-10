@@ -33,73 +33,60 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Column(
         children: [
           // ── Photo médicale avec clip courbe ──────────────────────────
-          ClipPath(
-            clipper: _BottomWaveClipper(),
-            child: SizedBox(
-              height: h * 0.40,
-              width: double.infinity,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  // Photo : mettre assets/images/login_doctor.jpg
-                  // Si absente, fallback couleur
-                  Image.asset(
-                    'assets/images/login_doctor.png',
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      color: const Color(0xFFB07070),
-                      child: const Center(
-                        child: Icon(Icons.person, size: 80, color: Colors.white38),
-                      ),
+          SizedBox(
+            height: h * 0.40,
+            width: double.infinity,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.asset(
+                  'assets/images/login_doctor.png',
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => Container(color: const Color(0xFFB07070)),
+                ),
+      // Dégradé bordeaux du TOP vers le bas (couvre tout le haut)
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        AppColors.primary,                    // bordeaux plein tout en haut
+                        AppColors.primary.withOpacity(0.6),   // mi-chemin
+                        AppColors.primary.withOpacity(0.0),   // transparent en bas
+                      ],
+                      stops: const [0.0, 0.35, 1.0],
                     ),
                   ),
-                  // Gradient bordeaux en bas pour fondu
-                  Positioned(
-                    bottom: 0, left: 0, right: 0,
-                    child: Container(
-                      height: 120,
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                          // ignore: deprecated_member_use
-                          colors: [AppColors.primary, AppColors.primary.withOpacity(0)],
-                        ),
-                      ),
-                    ),
-                  ),
-                  // Titre + back
-                  SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () => Navigator.maybePop(context),
-                            child: Container(
-                              width: 34, height: 34,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                // ignore: deprecated_member_use
-                                color: Colors.white.withOpacity(0.25),
-                              ),
-                              child: const Icon(Icons.chevron_left,
-                                  color: Colors.white, size: 22),
+                ),
+      // Titre tout en haut
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.splash),
+                          child: Container(
+                            width: 34, height: 34,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white.withOpacity(0.25),
                             ),
+                            child: const Icon(Icons.chevron_left, color: Colors.white, size: 22),
                           ),
-                          const SizedBox(width: 12),
-                          const Text('Content de te revoir',
-                              style: TextStyle(color: Colors.white,
-                                  fontSize: 20, fontWeight: FontWeight.w700)),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(width: 12),
+                        const Text('Content de te revoir',
+                            style: TextStyle(color: Colors.white,
+                                fontSize: 20, fontWeight: FontWeight.w700)),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-
           // ── Formulaire ───────────────────────────────────────────────
           Expanded(
             child: SingleChildScrollView(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:voxcordis_app/core/routes/app_routes.dart';
 import '../../core/constants/app_colors.dart';
 import '../../models/analysis_result.dart';
 import '../../providers/analysis_provider.dart';
@@ -33,7 +34,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       appBar: AppBar(
         backgroundColor: AppColors.background, elevation: 0,
         leading: GestureDetector(
-          onTap: () => Navigator.maybePop(context),
+          onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.dashboard),
           child: Container(
             margin: const EdgeInsets.all(8),
             decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white,
