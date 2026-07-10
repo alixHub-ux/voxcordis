@@ -18,8 +18,9 @@ class _AnalysisLoadingScreenState extends State<AnalysisLoadingScreen>
   @override
   void initState() {
     super.initState();
-    _pulse = AnimationController(vsync: this,
-        duration: const Duration(milliseconds: 900))..repeat(reverse: true);
+    _pulse = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 900))
+      ..repeat(reverse: true);
   }
 
   @override
@@ -28,9 +29,22 @@ class _AnalysisLoadingScreenState extends State<AnalysisLoadingScreen>
   @override
   Widget build(BuildContext context) {
     final analysis = context.watch<AnalysisProvider>();
-    if (analysis.state == AnalysisState.done || analysis.state == AnalysisState.error) {
+
+    // Navigation selon l'état
+    if (analysis.state == AnalysisState.done) {
       WidgetsBinding.instance.addPostFrameCallback((_) =>
           Navigator.pushReplacementNamed(context, AppRoutes.result));
+    } else if (analysis.state == AnalysisState.error) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(analysis.errorMsg ?? 'Erreur inconnue'),
+            backgroundColor: AppColors.riskHigh,
+            duration: const Duration(seconds: 4),
+          ),
+        );
+        Navigator.pushReplacementNamed(context, AppRoutes.recording);
+      });
     }
 
     return Scaffold(
@@ -38,16 +52,21 @@ class _AnalysisLoadingScreenState extends State<AnalysisLoadingScreen>
       appBar: AppBar(
         backgroundColor: AppColors.background, elevation: 0,
         leading: GestureDetector(
-          onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.recording),
+          onTap: () => Navigator.pushReplacementNamed(
+              context, AppRoutes.recording),
           child: Container(
             margin: const EdgeInsets.all(8),
-            decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white,
-                boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)]),
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+              boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)],
+            ),
             child: const Icon(Icons.chevron_left, color: AppColors.textPrimary),
           ),
         ),
         title: const Text('Analyse vocale',
-            style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
+            style: TextStyle(
+                color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
       ),
       body: Center(
         child: Column(
@@ -64,22 +83,21 @@ class _AnalysisLoadingScreenState extends State<AnalysisLoadingScreen>
                     width: 160, height: 160,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: const Color(0xFFEED8D8),       // cercle rose pâle
+                      color: const Color(0xFFEED8D8),
                       border: Border.all(
-                        // ignore: deprecated_member_use
-                        color: AppColors.primary.withOpacity(0.4), width: 2),
-                      boxShadow: [BoxShadow(
-                        // ignore: deprecated_member_use
-                        color: AppColors.primary.withOpacity(0.15),
-                        blurRadius: 20 + 10 * _pulse.value, // halo qui grandit
-                        spreadRadius: 2,
-                      )],
+                          // ignore: deprecated_member_use
+                          color: AppColors.primary.withOpacity(0.4), width: 2),
+                      boxShadow: [
+                        BoxShadow(
+                          // ignore: deprecated_member_use
+                          color: AppColors.primary.withOpacity(0.15),
+                          blurRadius: 20 + 10 * _pulse.value,
+                          spreadRadius: 2,
+                        )
+                      ],
                     ),
                     child: const Center(
-                      child: HeartLogo(
-                        size: 100,
-                        color: AppColors.primary,  // logo bordeaux sur fond rose
-                      ),
+                      child: HeartLogo(size: 100, color: AppColors.primary)
                     ),
                   ),
                 );
@@ -94,7 +112,6 @@ class _AnalysisLoadingScreenState extends State<AnalysisLoadingScreen>
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500,
                     color: AppColors.primary)),
             const SizedBox(height: 40),
-            // Barre de progression
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: ClipRRect(

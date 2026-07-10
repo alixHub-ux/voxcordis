@@ -16,7 +16,8 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200));
+    _ctrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1200));
     _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeIn);
     _ctrl.forward();
   }
@@ -36,28 +37,35 @@ class _SplashScreenState extends State<SplashScreen>
             child: Column(
               children: [
                 const Spacer(flex: 3),
+
                 // Logo cœur lignes blanches
-                const HeartLogo(),
+                HeartLogo(size: 160, color: Colors.white),
                 const SizedBox(height: 32),
-                // "VOXCORDIS" avec X doré
+
+                // Wordmark image (VOXCORDIS)
                 Image.asset(
                   'assets/images/wordmark.png',
                   height: 48,
                 ),
                 const SizedBox(height: 10),
-                Text('La Voix Du Coeur',
-                    style: TextStyle(
-                      // ignore: deprecated_member_use
-                      color: Colors.white.withOpacity(0.85),
-                      fontSize: 16, fontWeight: FontWeight.w300,
-                      letterSpacing: 1.5,
-                    )),
+
+                Text(
+                  'La Voix Du Coeur',
+                  style: TextStyle(
+                    color: Colors.white.withOpacity(0.85),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w300,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+
                 const Spacer(flex: 4),
+
                 SizedBox(
                   width: double.infinity, height: 56,
                   child: ElevatedButton(
-                    onPressed: () =>
-                        Navigator.pushReplacementNamed(context, AppRoutes.login),
+                    onPressed: () => Navigator.pushReplacementNamed(
+                        context, AppRoutes.login),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: AppColors.primary,
@@ -66,7 +74,8 @@ class _SplashScreenState extends State<SplashScreen>
                           borderRadius: BorderRadius.circular(32)),
                     ),
                     child: const Text('Commencer →',
-                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600)),
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.w600)),
                   ),
                 ),
                 const SizedBox(height: 40),

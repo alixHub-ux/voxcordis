@@ -18,7 +18,7 @@ class AppConstants {
 
   // Base de donnees locale
   static const String dbName = 'voxcordis.db';
-  static const int dbVersion = 1;
+  static const int dbVersion = 2;
 
   // Classes du modele (section 4)
   static const int classHealthy = 0;

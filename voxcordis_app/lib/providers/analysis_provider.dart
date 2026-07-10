@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../models/analysis_result.dart';
 import '../services/audio_service.dart';
-import '../services/inference_service.dart';
 import '../services/backend_service.dart';
 import '../database/database_helper.dart';
 
@@ -9,7 +8,6 @@ enum AnalysisState { idle, recording, analyzing, done, error }
 
 class AnalysisProvider extends ChangeNotifier {
   final AudioService _audio = AudioService();
-  final InferenceService _inference = InferenceService();
   final BackendService _backend = BackendService();
 
   AnalysisState _state = AnalysisState.idle;
@@ -38,24 +36,29 @@ class AnalysisProvider extends ChangeNotifier {
     return true;
   }
 
-  /// Arrete l'enregistrement puis lance l'inference (offline ou online).
+  /// Arrête l'enregistrement puis envoie au backend Render (mode online uniquement).
+  /// Le mode offline TFLite est désactivé car incompatible avec la version du modèle.
   Future<void> stopAndAnalyze() async {
     _state = AnalysisState.analyzing;
+    _errorMsg = null;
     notifyListeners();
 
     try {
       final wavPath = await _audio.stopRecording();
       if (wavPath == null) throw Exception('Fichier audio introuvable.');
 
-      // Detection auto offline/online (section 5)
+      // Vérifier la connectivité
       final online = await _backend.isOnline();
-      AnalysisResult result;
-
-      if (online) {
-        result = await _backend.predictOnline(wavPath);
-      } else {
-        result = await _inference.runInference(wavPath);
+      if (!online) {
+        throw Exception(
+          'Connexion au serveur impossible.\n'
+          'Vérifiez votre connexion internet.\n'
+          'Note : le serveur peut prendre 30-60s à démarrer.'
+        );
       }
+
+      // Envoyer au backend Render
+      final result = await _backend.predictOnline(wavPath);
 
       // Persistance locale
       final id = await DatabaseHelper.instance.insertResult(result);
@@ -65,17 +68,14 @@ class AnalysisProvider extends ChangeNotifier {
         predictedClass: result.predictedClass,
         confidence: result.confidence,
         riskLevel: result.riskLevel,
-        isSynced: result.isSynced,
+        isSynced: true,
         modelVersion: result.modelVersion,
       );
 
-      // Sync cloud en arriere-plan si online
-      if (online) {
-        DatabaseHelper.instance.markSynced(id);
-      }
-
+      await DatabaseHelper.instance.markSynced(id);
       await _audio.deleteTemp();
       _state = AnalysisState.done;
+
     } catch (e) {
       _errorMsg = e.toString();
       _state = AnalysisState.error;
@@ -99,7 +99,6 @@ class AnalysisProvider extends ChangeNotifier {
   @override
   void dispose() {
     _audio.dispose();
-    _inference.close();
     super.dispose();
   }
 }

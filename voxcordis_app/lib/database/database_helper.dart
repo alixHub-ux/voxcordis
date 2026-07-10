@@ -21,9 +21,18 @@ class DatabaseHelper {
     final path = join(await getDatabasesPath(), AppConstants.dbName);
     return openDatabase(
       path,
-      version: AppConstants.dbVersion,
+      version: 2,                  // ← 1 → 2
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,       // ← ajouter
     );
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute(
+        'ALTER TABLE users ADD COLUMN password TEXT NOT NULL DEFAULT ""'
+      );
+    }
   }
 
   Future<void> _onCreate(Database db, int version) async {
