@@ -47,6 +47,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.1
+
 
 flutter:
   uses-material-design: true
@@ -61,3 +63,11 @@ flutter:
     - assets/images/guide_phone.png
     - assets/images/guide_voice.png
     - assets/images/logo_voxcordis.svg
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/voxcordisIcon.png"
+  min_sdk_android: 21
+  web:
+    generate: false

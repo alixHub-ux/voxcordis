@@ -28,13 +28,14 @@ class DatabaseHelper {
 
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        firstName TEXT NOT NULL,
-        lastName  TEXT NOT NULL,
-        email     TEXT NOT NULL UNIQUE
-      )
-    ''');
+    CREATE TABLE users (
+    id        INTEGER PRIMARY KEY AUTOINCREMENT,
+    firstName TEXT NOT NULL,
+    lastName  TEXT NOT NULL,
+    email     TEXT NOT NULL UNIQUE,
+    password  TEXT NOT NULL
+  )
+''');
 
     await db.execute('''
       CREATE TABLE analysis_results (
@@ -60,6 +61,14 @@ class DatabaseHelper {
   Future<UserModel?> getUser(int id) async {
     final db = await database;
     final rows = await db.query('users', where: 'id = ?', whereArgs: [id]);
+    if (rows.isEmpty) return null;
+    return UserModel.fromMap(rows.first);
+  }
+
+  Future<UserModel?> getUserByEmail(String email) async {
+    final db = await database;
+    final rows = await db.query('users',
+        where: 'email = ?', whereArgs: [email]);
     if (rows.isEmpty) return null;
     return UserModel.fromMap(rows.first);
   }

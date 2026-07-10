@@ -3,12 +3,14 @@ class UserModel {
   final String firstName;
   final String lastName;
   final String email;
+  final String password; // ← ajouter
 
   UserModel({
     this.id,
     required this.firstName,
     required this.lastName,
     required this.email,
+    required this.password, // ← ajouter
   });
 
   String get fullName => '$firstName ${lastName.toUpperCase()}';
@@ -20,6 +22,7 @@ class UserModel {
         'firstName': firstName,
         'lastName': lastName,
         'email': email,
+        'password': password, // ← ajouter
       };
 
   factory UserModel.fromMap(Map<String, dynamic> map) => UserModel(
@@ -27,5 +30,6 @@ class UserModel {
         firstName: map['firstName'],
         lastName: map['lastName'],
         email: map['email'],
+        password: map['password'] ?? '', // ← ajouter
       );
 }
