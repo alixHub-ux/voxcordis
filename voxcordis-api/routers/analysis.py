@@ -49,7 +49,17 @@ async def predict_endpoint(file: UploadFile = File(...), session: Session = Depe
     session.refresh(analysis)
 
     response = build_response(prediction)
-    return {"id": analysis.id, "result": response, "probabilities": prediction.get("probabilities", {})}
+
+    risk_mapping = {"LOW": 0, "LOW_MEDIUM": 1, "MEDIUM": 2, "WATCH": 2, "HIGH": 2, "UNCERTAIN": 0}
+    return {
+        "id": analysis.id,
+        "predicted_class": int(prediction["class_id"]),
+        "confidence": float(prediction["confidence"]),
+        "risk_level_index": risk_mapping.get(response["risk_level"], 0),
+        "model_version": "1.1.0",
+        "result": response,
+        "probabilities": prediction.get("probabilities", {}),
+    }
 
 
 @router.get("/history")
