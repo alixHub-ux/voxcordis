@@ -12,26 +12,34 @@ router = APIRouter()
 
 @router.post("/register", status_code=201)
 def register(body: RegisterRequest, session: Session = Depends(get_session)):
-    existing = session.query(User).filter(User.email == body.email).first()
-    if existing:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    user = User(
-        email=body.email,
-        first_name=body.first_name,
-        last_name=body.last_name,
-        hashed_password=get_password_hash(body.password),
-    )
-    session.add(user)
-    session.commit()
-    session.refresh(user)
-    access_token = create_access_token({"sub": user.id})
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user_id": user.id,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-    }
+    import logging
+    logger = logging.getLogger("voxcordis")
+    try:
+        existing = session.query(User).filter(User.email == body.email).first()
+        if existing:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        user = User(
+            email=body.email,
+            first_name=body.first_name,
+            last_name=body.last_name,
+            hashed_password=get_password_hash(body.password),
+        )
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+        access_token = create_access_token({"sub": user.id})
+        return {
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user_id": user.id,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception("Register failed")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/login")
