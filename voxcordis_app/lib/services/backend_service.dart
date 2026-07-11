@@ -3,9 +3,17 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../models/analysis_result.dart';
 
-/// Communication avec le backend FastAPI Voxcordis sur Render.
+/// Communication avec le backend FastAPI Voxcordis.
 class BackendService {
-  static const String _baseUrl = 'https://voxcordis-api.onrender.com';
+  static const String _prodBaseUrl = 'https://voxcordis-api.onrender.com';
+  static const String _devBaseUrl = 'http://10.0.2.2:7860';
+
+  static bool _useLocal = false;
+
+  static void useLocal(bool value) => _useLocal = value;
+  static bool get isLocal => _useLocal;
+
+  String get _baseUrl => _useLocal ? _devBaseUrl : _prodBaseUrl;
 
   // Token JWT stocké après login
   String? _token;

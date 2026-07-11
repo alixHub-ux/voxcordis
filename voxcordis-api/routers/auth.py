@@ -5,21 +5,33 @@ from sqlalchemy.orm import Session
 from db import get_session
 from db_models import User
 from core.auth import verify_password, get_password_hash, create_access_token
+from schemas.auth import RegisterRequest
 
 router = APIRouter()
 
 
-@router.post("/register")
-def register(form: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
-    existing = session.query(User).filter(User.email == form.username).first()
+@router.post("/register", status_code=201)
+def register(body: RegisterRequest, session: Session = Depends(get_session)):
+    existing = session.query(User).filter(User.email == body.email).first()
     if existing:
         raise HTTPException(status_code=400, detail="Email already registered")
-    user = User(email=form.username, hashed_password=get_password_hash(form.password))
+    user = User(
+        email=body.email,
+        first_name=body.first_name,
+        last_name=body.last_name,
+        hashed_password=get_password_hash(body.password),
+    )
     session.add(user)
     session.commit()
     session.refresh(user)
     access_token = create_access_token({"sub": user.id})
-    return {"access_token": access_token, "token_type": "bearer", "user_id": user.id}
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user_id": user.id,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+    }
 
 
 @router.post("/login")

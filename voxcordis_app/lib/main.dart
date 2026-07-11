@@ -21,6 +21,14 @@ import 'screens/profile/profile_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Mode local pour le développement (debug)
+  if (bool.hasEnvironment('USE_LOCAL_BACKEND')
+      ? const bool.fromEnvironment('USE_LOCAL_BACKEND')
+      : false) {
+    BackendService.useLocal(true);
+  }
+
   runApp(const VoxcordisApp());
 }
 
