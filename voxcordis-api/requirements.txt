@@ -1,0 +1,17 @@
+fastapi==0.110.0
+uvicorn==0.29.0
+python-multipart==0.0.9
+
+tensorflow==2.20.0
+tensorflow-hub==0.16.1
+
+librosa==0.10.2
+numpy==1.26.4
+joblib==1.4.0
+pydantic==2.6.4
+soundfile==0.12.1
+setuptools==67.8.0
+
+sqlalchemy==1.4.41
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
