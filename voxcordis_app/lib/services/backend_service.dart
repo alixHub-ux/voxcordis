@@ -26,12 +26,12 @@ class BackendService {
     if (_token != null) 'Authorization': 'Bearer $_token',
   };
 
-  /// Vérifie si le backend est joignable (utilise /docs qui existe toujours)
+  /// Vérifie si le backend est joignable
   Future<bool> isOnline() async {
     try {
       final res = await http
-          .get(Uri.parse('$_baseUrl/docs'))
-          .timeout(const Duration(seconds: 90));
+          .get(Uri.parse('$_baseUrl/'))
+          .timeout(const Duration(seconds: 30));
       return res.statusCode == 200;
     } catch (_) {
       return false;
