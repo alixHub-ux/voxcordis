@@ -6,7 +6,7 @@ import '../models/analysis_result.dart';
 /// Communication avec le backend FastAPI Voxcordis.
 class BackendService {
   static const String _prodBaseUrl = 'https://voxcordis-api.onrender.com';
-  static const String _devBaseUrl = 'http://10.0.2.2:7860';
+  static const String _devBaseUrl = 'http://localhost:7860';
 
   static bool _useLocal = false;
 
