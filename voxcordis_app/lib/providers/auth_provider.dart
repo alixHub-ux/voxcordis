@@ -17,6 +17,29 @@ class AuthProvider extends ChangeNotifier {
   String? get error => _error;
   bool get isLoggedIn => _currentUser != null;
 
+  /// Restaure la session au démarrage de l'app.
+  /// Cherche un utilisateur en SQLite, tente un re-login online
+  /// pour obtenir un token frais, ou reste en offline.
+  Future<bool> autoLogin() async {
+    final user = await DatabaseHelper.instance.getLatestUser();
+    if (user == null) return false;
+
+    _currentUser = user;
+
+    // Tente un re-login online pour obtenir un token
+    try {
+      final online = await backend.isOnline();
+      if (online) {
+        await backend.login(email: user.email, password: user.password);
+      }
+    } catch (_) {
+      // Échec du re-login → on reste en offline
+    }
+
+    notifyListeners();
+    return true;
+  }
+
   Future<bool> login(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
       _error = 'Veuillez remplir tous les champs.';

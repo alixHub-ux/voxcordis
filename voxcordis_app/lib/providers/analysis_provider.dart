@@ -2,13 +2,15 @@ import 'package:flutter/foundation.dart';
 import '../models/analysis_result.dart';
 import '../services/audio_service.dart';
 import '../services/backend_service.dart';
+import '../services/inference_service.dart';
 import '../database/database_helper.dart';
 
 enum AnalysisState { idle, recording, analyzing, done, error }
 
 class AnalysisProvider extends ChangeNotifier {
   final AudioService _audio = AudioService();
-  final BackendService backend; // partagé depuis main.dart
+  final BackendService backend;
+  final InferenceService _local = InferenceService();
 
   AnalysisProvider({required this.backend});
 
@@ -46,16 +48,14 @@ class AnalysisProvider extends ChangeNotifier {
       if (wavPath == null) throw Exception('Fichier audio introuvable.');
 
       final online = await backend.isOnline();
-      if (!online) {
-        throw Exception(
-          'Connexion au serveur impossible.\n'
-          'Vérifiez votre connexion internet.\n'
-          'Note : le serveur peut prendre 30-60s à démarrer.'
-        );
+      final AnalysisResult result;
+      if (online && backend.token != null) {
+        result = await backend.predictOnline(wavPath);
+      } else {
+        result = await _local.runInference(wavPath);
       }
 
-      final result = await backend.predictOnline(wavPath);
-
+      final isSynced = online && backend.token != null;
       final id = await DatabaseHelper.instance.insertResult(result);
       _lastResult = AnalysisResult(
         id: id,
@@ -63,11 +63,11 @@ class AnalysisProvider extends ChangeNotifier {
         predictedClass: result.predictedClass,
         confidence: result.confidence,
         riskLevel: result.riskLevel,
-        isSynced: true,
+        isSynced: isSynced,
         modelVersion: result.modelVersion,
       );
 
-      await DatabaseHelper.instance.markSynced(id);
+      if (isSynced) await DatabaseHelper.instance.markSynced(id);
       await _audio.deleteTemp();
       _state = AnalysisState.done;
 
@@ -92,6 +92,7 @@ class AnalysisProvider extends ChangeNotifier {
   @override
   void dispose() {
     _audio.dispose();
+    _local.close();
     super.dispose();
   }
 }

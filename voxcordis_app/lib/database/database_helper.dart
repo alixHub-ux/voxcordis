@@ -87,6 +87,21 @@ class DatabaseHelper {
     await db.delete('users', where: 'id = ?', whereArgs: [id]);
   }
 
+  /// Récupère tous les utilisateurs (pour restauration de session)
+  Future<List<UserModel>> getAllUsers() async {
+    final db = await database;
+    final rows = await db.query('users', orderBy: 'id DESC');
+    return rows.map(UserModel.fromMap).toList();
+  }
+
+  /// Récupère le dernier utilisateur connecté
+  Future<UserModel?> getLatestUser() async {
+    final db = await database;
+    final rows = await db.query('users', orderBy: 'id DESC', limit: 1);
+    if (rows.isEmpty) return null;
+    return UserModel.fromMap(rows.first);
+  }
+
   // ── Analysis results ──────────────────────────────────────────────────────
 
   Future<int> insertResult(AnalysisResult result) async {

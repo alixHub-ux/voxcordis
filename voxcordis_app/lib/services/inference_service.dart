@@ -1,11 +1,16 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
 import 'package:flutter/services.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import '../core/constants/app_constants.dart';
 import '../models/analysis_result.dart';
 
 /// Pipeline d'inference locale (mode offline).
+///
+/// Doit reproduire EXACTEMENT le preprocessing du backend Python :
+///   rms = sqrt(mean(x^2))
+///   audio = audio * (0.1 / rms)
 ///
 /// Ordre des operations (section 3) :
 ///   1. Charger le fichier WAV
@@ -67,7 +72,7 @@ class InferenceService {
     // 6. Construction du resultat
     final classIdx =
         probs.indexOf(probs.reduce((a, b) => a > b ? a : b));
-    final confidence = probs[classIdx];
+    final confidence = probs[classIdx] * 100; // pourcentage, comme le backend
     final risk = _toRiskLevel(classIdx);
 
     return AnalysisResult(
@@ -75,7 +80,7 @@ class InferenceService {
       predictedClass: classIdx,
       confidence: confidence,
       riskLevel: risk,
-      modelVersion: 'v1.0',
+      modelVersion: '1.1.0',
     );
   }
 
@@ -104,16 +109,21 @@ class InferenceService {
     return samples;
   }
 
+  static const double _rmsTarget = 0.1;
+
   /// Normalisation RMS : identique au step Python
-  /// `audio = audio / (np.sqrt(np.mean(audio**2)) + 1e-9)`
+  /// `audio = audio * (0.1 / (sqrt(mean(audio^2)) + 1e-9))`
   List<double> _rmsNormalize(List<double> samples) {
     final rms = _rms(samples);
-    return samples.map((s) => s / (rms + 1e-9)).toList();
+    if (rms > 0) {
+      return samples.map((s) => s * (_rmsTarget / (rms + 1e-9))).toList();
+    }
+    return samples;
   }
 
   double _rms(List<double> s) {
     final sum = s.fold<double>(0.0, (acc, x) => acc + x * x);
-    return (sum / s.length < 0 ? 0 : sum / s.length);
+    return math.sqrt(sum / s.length);
   }
 
   /// Passe les samples dans YAMNet et retourne l'embedding (1024-dim).

@@ -1,0 +1,222 @@
+=== LOGS VOXCORDIS ===
+Date: Sat 11 Jul 2026 09:52:58 PM GMT
+Appareil: TECNO KL4 (adb: 28053)
+Backend: https://voxcordis-api.onrender.com
+=== Début capture ===
+
+═══════════════════════════════════════════════
+PROBLÈME SIGNALÉ : L'analyse vocale ne passe
+pas sur l'écran d'analyse après enregistrement.
+═══════════════════════════════════════════════
+
+CAUSES IDENTIFIÉES & CORRECTIFS APPLIQUÉS :
+
+1. MISMATCH RÉPONSE BACKEND → FRONTEND (FIXÉ)
+   Backend retournait :  {id, result, probabilities}
+   Frontend attendait : {predicted_class, confidence, risk_level_index, model_version}
+   → routers/analysis.py : réponse enrichie avec les champs attendus
+
+2. isOnline() UTILISAIT /docs (FIXÉ)
+   → backend_service.dart : utilise maintenant / (endpoint health)
+
+3. BACKEND RENDER INDISPONIBLE pendant le test
+   → https://voxcordis-api.onrender.com ne répond plus
+   → Attendre le redéploiement automtique après les pushes
+
+4. BUG UI DISPOSITIF (ADRESSAGE)
+   Le champ "Email" disparaît quand le clavier s'ouvre
+   → Problème de ScrollView + keyboard insets
+
+═══════════════════════════════════════════════
+21:52:58 --------- beginning of main
+21:52:59 I/e.voxcordis_app(28053): Late-enabling -Xcheck:jni
+21:52:59 I/e.voxcordis_app(28053): Using generational CollectorTypeCMC GC.
+21:52:59 D/nativeloader(28053): Load libframework-connectivity-tiramisu-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity-t.jar: ok
+21:52:59 D/nativeloader(28053): Load libstats_jni.so using APEX ns com_android_os_statsd for caller /apex/com.android.os.statsd/javalib/framework-statsd.jar: ok
+21:52:59 D/CompatibilityChangeReporter(28053): Compat change id reported: 171979766; UID 10355; state: ENABLED
+21:52:59 D/CompatibilityChangeReporter(28053): Compat change id reported: 242716250; UID 10355; state: ENABLED
+21:52:59 --------- beginning of system
+21:52:59 D/TranClassInfo(28053): instance successfully. com.transsion.hubcore.graphics.TranGraphicImpl@ee974e1 from com.transsion.hubcore.graphics.ITranGraphic
+21:52:59 D/os.SingleLiceFactory(28053): using android.graphics.IGraphicLice$DefaultImpl@2098206 instead of com.transsion.typeface.TypefaceLiceFactory  from android.graphics.IGraphicLice
+21:52:59 D/os.LiceInfo(28053): instance successfully. com.transsion.graphics.GraphicLice@a4e60c7 from android.graphics.IGraphicLice
+21:52:59 D/nativeloader(28053): Configuring clns-4 for other apk /data/app/~~8nzHZsmTFud3OPDtQIRdjg==/com.example.voxcordis_app-kDofQr5Qy35Dt_4gCp7CEg==/base.apk. target_sdk_version=36, uses_libraries=, library_path=/data/app/~~8nzHZsmTFud3OPDtQIRdjg==/com.example.voxcordis_app-kDofQr5Qy35Dt_4gCp7CEg==/lib/arm64:/data/app/~~8nzHZsmTFud3OPDtQIRdjg==/com.example.voxcordis_app-kDofQr5Qy35Dt_4gCp7CEg==/base.apk!/lib/arm64-v8a, permitted_path=/data:/mnt/expand:/data/user/0/com.example.voxcordis_app
+21:52:59 D/nativeloader(28053): Load libframework-connectivity-jni.so using APEX ns com_android_tethering for caller /apex/com.android.tethering/javalib/framework-connectivity.jar: ok
+21:52:59 V/GraphicsEnvironment(28053): Currently set values for:
+21:52:59 V/GraphicsEnvironment(28053):   angle_gl_driver_selection_pkgs=[]
+21:52:59 V/GraphicsEnvironment(28053):   angle_gl_driver_selection_values=[]
+21:52:59 V/GraphicsEnvironment(28053): ANGLE GameManagerService for com.example.voxcordis_app: false
+21:52:59 V/GraphicsEnvironment(28053): com.example.voxcordis_app is not listed in per-application setting
+21:52:59 V/GraphicsEnvironment(28053): Neither updatable production driver nor prerelease driver is supported.
+21:52:59 I/LoadedApk(28053): No resource references to update in package com.transsion.theme.icon
+21:52:59 D/vulkan  (28053): searching for layers in '/data/app/~~8nzHZsmTFud3OPDtQIRdjg==/com.example.voxcordis_app-kDofQr5Qy35Dt_4gCp7CEg==/lib/arm64'
+21:52:59 D/vulkan  (28053): searching for layers in '/data/app/~~8nzHZsmTFud3OPDtQIRdjg==/com.example.voxcordis_app-kDofQr5Qy35Dt_4gCp7CEg==/base.apk!/lib/arm64-v8a'
+21:52:59 D/ActivityThread(28053): ++ activityComponent:com.example.voxcordis_app/com.example.voxcordis_app.MainActivity counts:1 ALEAK_CLEAR_SUPPORT:true
+21:52:59 D/FlutterJNI(28053): Beginning load of flutter...
+21:52:59 I/ResourceExtractor(28053): Found extracted resources res_timestamp-1-1783802196052
+21:52:59 D/vulkan  (28053): added global layer 'VK_LAYER_KHRONOS_validation' from library '/data/app/~~8nzHZsmTFud3OPDtQIRdjg==/com.example.voxcordis_app-kDofQr5Qy35Dt_4gCp7CEg==/base.apk!/lib/arm64-v8a/libVkLayer_khronos_validation.so'
+21:52:59 D/nativeloader(28053): Load /data/app/~~8nzHZsmTFud3OPDtQIRdjg==/com.example.voxcordis_app-kDofQr5Qy35Dt_4gCp7CEg==/base.apk!/lib/arm64-v8a/libflutter.so using class loader ns clns-4 (caller=/data/app/~~8nzHZsmTFud3OPDtQIRdjg==/com.example.voxcordis_app-kDofQr5Qy35Dt_4gCp7CEg==/base.apk): ok
+21:52:59 D/FlutterJNI(28053): flutter (null) was loaded normally!
+21:52:59 W/e.voxcordis_app(28053): type=1400 audit(0.0:976530): avc:  denied  { read } for  name="max_map_count" dev="proc" ino=25721650 scontext=u:r:untrusted_app:s0:c99,c257,c512,c768 tcontext=u:object_r:proc_max_map_count:s0 tclass=file permissive=0 app=com.facebook.katana
+21:52:59 I/flutter (28053): [IMPORTANT:flutter/shell/platform/android/android_context_vk_impeller.cc(62)] Using the Impeller rendering backend (Vulkan).
+21:52:59 I/flutter (28053): The Dart VM service is listening on http://127.0.0.1:39609/f6MPWQNq4ao=/
+21:52:59 D/nativeloader(28053): Load /data/app/~~8nzHZsmTFud3OPDtQIRdjg==/com.example.voxcordis_app-kDofQr5Qy35Dt_4gCp7CEg==/base.apk!/lib/arm64-v8a/libdartjni.so using class loader ns clns-4 (caller=/data/app/~~8nzHZsmTFud3OPDtQIRdjg==/com.example.voxcordis_app-kDofQr5Qy35Dt_4gCp7CEg==/base.apk!classes10.dex): ok
+21:52:59 D/TranClassInfo(28053): instance successfully. com.transsion.hubcore.view.TranViewImpl@247f584 from com.transsion.hubcore.view.ITranView
+21:52:59 I/SurfaceFactory(28053): [static] sSurfaceFactory = com.transsion.rt.SurfaceFactoryImpl@d89f16d
+21:52:59 W/libc    (28053): Access denied finding property "ro.vendor.game_aisr_enable"
+21:52:59 D/AppResolutionTuner(28053): loadTunerAppList +
+21:52:59 W/libc    (28053): Access denied finding property "ro.vendor.game_aisr_enable"
+21:52:59 W/AppResolutionTuner(28053): Target file doesn't exist: /data/retuner/sf_resolution_tuner_app_list.xml
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.tencent.ig', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.tencent.tmgp.sgame', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.activision.callofduty.shooter', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.garena.game.codm', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.tencent.tmgp.kr.codm', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.vng.codmvn', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.activision.callofduty.codpbt', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.tencent.tmgp.cod', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.tencent.tmgp.pubgmhd', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.tencent.iglite', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.tencent.igce', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.rekoo.pubgm', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.pubg.krmobile', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.vng.pubgmobile', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.pubg.imobile', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='vn.vng.pubgmobile', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.garena.game.kgtw', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.garena.game.kgth', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.imangi.templerun2', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.mobile.legends', scale='1.1', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): loadTunerAppList -
+21:52:59 D/AppResolutionTuner(28053): loadTunerAppList +
+21:52:59 W/libc    (28053): Access denied finding property "ro.vendor.game_aisr_enable"
+21:52:59 W/AppResolutionTuner(28053): Target file doesn't exist: /data/retuner/sf_resolution_tuner_app_list.xml
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.tencent.ig', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.tencent.tmgp.sgame', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.activision.callofduty.shooter', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.garena.game.codm', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.tencent.tmgp.kr.codm', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.vng.codmvn', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.activision.callofduty.codpbt', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.tencent.tmgp.cod', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.tencent.tmgp.pubgmhd', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.tencent.iglite', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.tencent.igce', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.rekoo.pubgm', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.pubg.krmobile', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.vng.pubgmobile', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.pubg.imobile', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='vn.vng.pubgmobile', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.garena.game.kgtw', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.garena.game.kgth', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.imangi.templerun2', scale='1.0', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): dom2xml: App{packageName='com.mobile.legends', scale='1.1', filteredWindows= []', scalingFlow= surfaceview'}
+21:52:59 D/AppResolutionTuner(28053): loadTunerAppList -
+21:52:59 D/SurfaceExt(28053): initResolutionTunner, mPackageName:com.example.voxcordis_app,mContainPackageName:falsemXScaleValue:1.0,mYScaleValue:1.0
+21:52:59 D/TranClassInfo(28053): instance successfully. com.transsion.hubcore.view.TranSurfaceImpl@910e5f0 from com.transsion.hubcore.view.ITranSurface
+21:52:59 I/TranVersion(28053): TranVersion static initializer: default = 34.3.0.1
+21:52:59 I/TranVersion(28053):  debug = false, debug_version = 34.3.0.1
+21:52:59 W/e.voxcordis_app(28053): type=1400 audit(0.0:976531): avc:  denied  { read } for  name="u:object_r:vendor_transched_support_prop:s0" dev="tmpfs" ino=495 scontext=u:r:untrusted_app:s0:c99,c257,c512,c768 tcontext=u:object_r:vendor_transched_support_prop:s0 tclass=file permissive=0 app=com.facebook.katana
+21:52:59 W/libc    (28053): Access denied finding property "ro.vendor.transched.support"
+21:52:59 W/libc    (28053): Access denied finding property "ro.vendor.powerdata.support"
+21:52:59 D/TranClassInfo(28053): instance successfully. com.transsion.hubcore.spdopts.magellan.implement.TranMagellanSurfaceComponentImpl@9e13769 from com.transsion.hubcore.magellan.ITranMagellanSurfaceComponent
+21:52:59 D/os.SingleLice(28053): instance successfully. com.transsion.dragdrop.v1.DragDropLice@7fcc5ee from com.transsion.dragdrop.DragDropLiceFactory
+21:52:59 D/os.SingleLiceFactory(28053): instance successfully. com.transsion.dragdrop.v1.DragDropLice@7fcc5ee from android.view.IViewLice
+21:52:59 D/os.LiceInfo(28053): instance successfully. com.transsion.view.ViewLice@f02fa8f from android.view.IViewLice
+21:52:59 D/TranClassInfo(28053): instance successfully. com.transsion.hubcore.spdopts.magellan.implement.TranMagellanViewComponentImpl@636711c from com.transsion.hubcore.magellan.ITranMagellanViewComponent
+21:52:59 I/e.voxcordis_app(28053): hiddenapi: Accessing hidden method Landroid/view/accessibility/AccessibilityNodeInfo;->getSourceNodeId()J (runtime_flags=0, domain=platform, api=unsupported,test-api) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+21:52:59 I/e.voxcordis_app(28053): hiddenapi: Accessing hidden method Landroid/view/accessibility/AccessibilityRecord;->getSourceNodeId()J (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+21:52:59 I/e.voxcordis_app(28053): hiddenapi: Accessing hidden field Landroid/view/accessibility/AccessibilityNodeInfo;->mChildNodeIds:Landroid/util/LongArray; (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+21:52:59 I/e.voxcordis_app(28053): hiddenapi: Accessing hidden method Landroid/util/LongArray;->get(I)J (runtime_flags=0, domain=platform, api=unsupported) from Lio/flutter/view/AccessibilityViewEmbedder$ReflectionAccessors; (domain=app, TargetSdkVersion=36) using reflection: allowed
+21:52:59 D/TranClassInfo(28053): instance successfully. com.transsion.hubcore.internal.TranInternalViewImpl@a9c869e from com.transsion.hubcore.internal.ITranInternalView
+21:52:59 D/os.SingleLice(28053): instance successfully. com.transsion.whitenavigation.v1.WhiteNavigationLice@1dda57f from com.transsion.whitenavigation.WhiteNavigationLiceFactory
+21:52:59 D/os.SingleLiceFactory(28053): instance successfully. com.transsion.whitenavigation.v1.WhiteNavigationLice@1dda57f from com.android.internal.IInternalViewLice
+21:52:59 D/os.SingleLiceFactory(28053): using com.android.internal.IInternalViewLice$DefaultImpl@306594c instead of com.transsion.screenshothelper.ScreenShotHelperImplLiceFactory  from com.android.internal.IInternalViewLice
+21:52:59 D/os.SingleLiceFactory(28053): using com.android.internal.IInternalViewLice$DefaultImpl@306594c instead of com.transsion.flamboyant.FlamboyantLiceFactory  from com.android.internal.IInternalViewLice
+21:52:59 D/os.LiceInfo(28053): instance successfully. com.transsion.internal.InternalViewLice@5b15d95 from com.android.internal.IInternalViewLice
+21:52:59 I/WhiteNavigationLice(28053): Modify naviBarColor to 0xFFF0F0F0, and windowBackgroundColor is -1   /windowIsTranslucent:false
+21:52:59 W/CheckTime(28053): App running slow: Executing activity onCreate took 1205ms
+21:52:59 D/TranClassInfo(28053): instance successfully. com.transsion.hubcore.app.TranActivityImpl@e311a9b from com.transsion.hubcore.app.ITranActivity
+21:52:59 D/TranClassInfo(28053): instance successfully. com.transsion.hubcore.spdopts.magellan.implement.TranMagellanActivityComponentImpl@fe5be38 from com.transsion.hubcore.magellan.ITranMagellanActivityComponent
+21:52:59 D/ActivityThreadLice(28053): received OSMessage 110001
+21:52:59 D/ActivityThreadLice(28053): send OSMessage 110001 to [-1]
+21:52:59 D/OSServiceManager(28053): update local os service os.activity from null to android.os.BinderProxy@cf4cb76
+21:52:59 D/CompatibilityChangeReporter(28053): Compat change id reported: 237531167; UID 10355; state: DISABLED
+21:52:59 W/OpenGLRenderer(28053): Unknown dataspace 0
+21:52:59 I/Choreographer(28053): Skipped 342 frames!  The application may be doing too much work on its main thread.
+21:52:59 W/libc    (28053): Access denied finding property "persist.vendor.gpu.fbc"
+21:52:59 I/mali_gralloc(28053): SPRD: get persist.vendor.gpu.fbc 1
+21:52:59 E/mali_gralloc(28053): Requested R8 format is not supported with this allocator. R8 format is only supported with the AIDL allocator
+21:52:59 E/mali_gralloc(28053): ERROR: Unrecognized and/or unsupported format 0x38 and usage 0xb00
+21:52:59 E/mali_gralloc(28053): ERROR: Format allocation info not found for format: 3b
+21:52:59 E/mali_gralloc(28053): ERROR: Format allocation info not found for format: 0
+21:52:59 E/mali_gralloc(28053): Invalid base format! req_base_format = 0x0, req_format = 0x3b
+21:52:59 E/mali_gralloc(28053): ERROR: Unrecognized and/or unsupported format 0x3b and usage 0xb00
+21:52:59 E/mali_gralloc(28053): Requested R8 format is not supported with this allocator. R8 format is only supported with the AIDL allocator
+21:52:59 E/mali_gralloc(28053): ERROR: Unrecognized and/or unsupported format 0x38 and usage 0xb00
+21:52:59 E/mali_gralloc(28053): ERROR: Format allocation info not found for format: 3b
+21:52:59 E/mali_gralloc(28053): ERROR: Format allocation info not found for format: 0
+21:52:59 E/mali_gralloc(28053): Invalid base format! req_base_format = 0x0, req_format = 0x3b
+21:52:59 E/mali_gralloc(28053): ERROR: Unrecognized and/or unsupported format 0x3b and usage 0xb00
+21:52:59 D/mali_gralloc(28053): register: id=25d0002b943, handle=0xb400007e04b254c0, importpid=-1, gRegisteredHandles=0
+21:52:59 D/mali_gralloc(28053): register: id=25d0002b944, handle=0xb400007e04b25840, importpid=-1, gRegisteredHandles=1
+21:52:59 D/mali_gralloc(28053): register: id=25d0002b945, handle=0xb400007e04b25920, importpid=-1, gRegisteredHandles=2
+21:52:59 D/mali_gralloc(28053): register: id=25d0002b946, handle=0xb400007e04b25a00, importpid=-1, gRegisteredHandles=3
+21:52:59 D/mali_gralloc(28053): register: id=25d0002b947, handle=0xb400007e04b25ae0, importpid=-1, gRegisteredHandles=4
+21:52:59 I/Choreographer(28053): Skipped 52 frames!  The application may be doing too much work on its main thread.
+21:52:59 D/mali_gralloc(28053): register: id=25d0002b948, handle=0xb400007d7a61a380, importpid=-1, gRegisteredHandles=5
+21:52:59 D/os.LiceInfo(28053): instance successfully. com.transsion.message.bank.v1.MessageBankLice@15e8786 from com.transsion.message.bank.IMessageBankLice
+21:52:59 I/Choreographer(28053): Skipped 64 frames!  The application may be doing too much work on its main thread.
+21:52:59 W/WindowOnBackDispatcher(28053): OnBackInvokedCallback is not enabled for the application.
+21:52:59 W/WindowOnBackDispatcher(28053): Set 'android:enableOnBackInvokedCallback="true"' in the application manifest.
+21:52:59 D/mali_gralloc(28053): register: id=25d0002b949, handle=0xb400007e04268420, importpid=-1, gRegisteredHandles=6
+21:52:59 D/ProfileInstaller(28053): Installing profile for com.example.voxcordis_app
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~hvfgbBko33OvpbTolQYAAw==/com.google.android.marvin.talkback-94e1T2zAAY_DCYQc-p1p_Q==/base.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~hvfgbBko33OvpbTolQYAAw==/com.google.android.marvin.talkback-94e1T2zAAY_DCYQc-p1p_Q==/split_config.arm64_v8a.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /product/operator/app/TranssionNotes/TranssionNotes.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~TYSp67T93lCA9vn6Gleg8g==/com.anthropic.claude-Nmc-3qJ4gmFzRYmQ70SNfw==/base.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~TYSp67T93lCA9vn6Gleg8g==/com.anthropic.claude-Nmc-3qJ4gmFzRYmQ70SNfw==/split_config.arm64_v8a.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~TYSp67T93lCA9vn6Gleg8g==/com.anthropic.claude-Nmc-3qJ4gmFzRYmQ70SNfw==/split_config.en.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~TYSp67T93lCA9vn6Gleg8g==/com.anthropic.claude-Nmc-3qJ4gmFzRYmQ70SNfw==/split_config.fr.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~TYSp67T93lCA9vn6Gleg8g==/com.anthropic.claude-Nmc-3qJ4gmFzRYmQ70SNfw==/split_config.xhdpi.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~NXxugQ91HHtGrF2K9kgqGQ==/com.deepseek.chat-ACBPnQTYO-vahMOY3y_nAg==/base.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~NXxugQ91HHtGrF2K9kgqGQ==/com.deepseek.chat-ACBPnQTYO-vahMOY3y_nAg==/split_config.arm64_v8a.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~NXxugQ91HHtGrF2K9kgqGQ==/com.deepseek.chat-ACBPnQTYO-vahMOY3y_nAg==/split_config.fr.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~NXxugQ91HHtGrF2K9kgqGQ==/com.deepseek.chat-ACBPnQTYO-vahMOY3y_nAg==/split_config.xhdpi.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~gduNv8dW6rI0maSwCCZGFA==/com.google.android.apps.translate-_RQ-Tpf2GhL7yTAf9nCyHw==/base.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~Rd-qoVMSZacLoROP7_XatQ==/com.openai.chatgpt-Gw1pHtrOKLQuOqifWtK7HA==/base.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~Rd-qoVMSZacLoROP7_XatQ==/com.openai.chatgpt-Gw1pHtrOKLQuOqifWtK7HA==/split_config.arm64_v8a.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~Rd-qoVMSZacLoROP7_XatQ==/com.openai.chatgpt-Gw1pHtrOKLQuOqifWtK7HA==/split_config.en.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~Rd-qoVMSZacLoROP7_XatQ==/com.openai.chatgpt-Gw1pHtrOKLQuOqifWtK7HA==/split_config.fr.apk' with 1 weak references
+21:52:59 W/e.voxcordis_app(28053): ApkAssets: Deleting an ApkAssets object '<empty> and /data/app/~~Rd-qoVMSZacLoROP7_XatQ==/com.openai.chatgpt-Gw1pHtrOKLQuOqifWtK7HA==/split_config.xhdpi.apk' with 1 weak references
+21:52:59 D/os.SingleLice(28053): instance successfully. com.transsion.view.accessibility.v1.AccessibilityNodeInfoLice@5dde627 from com.transsion.view.accessibility.AccessibilityNodeInfoLiceFactory
+21:52:59 D/os.SingleLiceFactory(28053): instance successfully. com.transsion.view.accessibility.v1.AccessibilityNodeInfoLice@5dde627 from android.view.accessibility.IAccessibilityLice
+21:52:59 D/os.LiceInfo(28053): instance successfully. com.transsion.view.accessibility.AccessibilityLice@4c510d4 from android.view.accessibility.IAccessibilityLice
+
+=== Remplissage formulaire ===
+21:53:01 I/ImeTracker(28053): com.example.voxcordis_app:e04a0796: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT
+21:53:01 D/InputMethodManager(28053): showSoftInput() view=io.flutter.embedding.android.FlutterView{638bdc3 VFE...... .F....ID 0,0-720,1600 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+21:53:01 I/AssistStructure(28053): Flattened final assist data: 484 bytes, containing 1 windows, 3 views
+21:53:01 D/InputConnectionAdaptor(28053): The input method toggled cursor monitoring on
+21:53:02 D/InsetsController(28053): show(ime(), fromIme=true)
+21:53:02 D/mali_gralloc(28053): register: id=25d0002b94e, handle=0xb400007e21a41080, importpid=-1, gRegisteredHandles=7
+21:53:02 D/mali_gralloc(28053): register: id=25d0002b94f, handle=0xb400007e21a41160, importpid=-1, gRegisteredHandles=8
+21:53:02 I/ImeTracker(28053): com.example.voxcordis_app:e04a0796: onShown
+Email: simplet123
+21:53:06 I/ImeTracker(28053): com.example.voxcordis_app:8f630d84: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT
+21:53:06 D/InputMethodManager(28053): showSoftInput() view=io.flutter.embedding.android.FlutterView{638bdc3 VFE...... .F...... 0,0-720,1600 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+21:53:06 I/ImeTracker(28053): com.example.voxcordis_app:fb053080: onRequestShow at ORIGIN_CLIENT_SHOW_SOFT_INPUT reason SHOW_SOFT_INPUT
+21:53:06 D/InputMethodManager(28053): showSoftInput() view=io.flutter.embedding.android.FlutterView{638bdc3 VFE...... .F...... 0,0-720,1600 #1 aid=1073741824} flags=0 reason=SHOW_SOFT_INPUT
+21:53:06 D/InputConnectionAdaptor(28053): The input method toggled cursor monitoring on
+21:53:06 I/AssistStructure(28053): Flattened final assist data: 464 bytes, containing 1 windows, 3 views
+21:53:06 D/InputConnectionAdaptor(28053): The input method toggled cursor monitoring off
+21:53:06 D/InputConnectionAdaptor(28053): The input method toggled cursor monitoring on
+21:53:06 D/InsetsController(28053): show(ime(), fromIme=true)
+21:53:06 I/ImeTracker(28053): com.example.voxcordis_app:8f630d84: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+21:53:07 D/InsetsController(28053): show(ime(), fromIme=true)
+21:53:07 I/ImeTracker(28053): com.example.voxcordis_app:fb053080: onCancelled at PHASE_CLIENT_APPLY_ANIMATION
+Password: pass123
+=== Connexion ===
+
+=== Écran après connexion ===
+content-desc="Content de te revoir"
+content-desc="Mot de passe"
