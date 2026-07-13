@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/routes/app_routes.dart';
 import '../../providers/analysis_provider.dart';
+import '../../services/pdf_export_service.dart';
 import '../../widgets/bottom_nav.dart';
 import '../../widgets/risk_badge.dart';
 
@@ -85,8 +86,8 @@ class ResultScreen extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Export PDF – à implémenter.')));
+                      final r = context.read<AnalysisProvider>().lastResult;
+                      if (r != null) PdfExportService.export(r);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary, foregroundColor: Colors.white,
