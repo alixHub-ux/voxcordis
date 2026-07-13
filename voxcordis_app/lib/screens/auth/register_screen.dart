@@ -227,6 +227,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               borderSide: const BorderSide(color: AppColors.primary, width: 1)),
           enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(24),
+              // ignore: deprecated_member_use
               borderSide: BorderSide(color: AppColors.primary.withOpacity(0.4))),
           focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(24),
