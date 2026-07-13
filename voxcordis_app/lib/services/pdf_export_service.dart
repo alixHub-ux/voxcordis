@@ -24,7 +24,7 @@ class PdfExportService {
                         color: PdfColor.fromInt(0xFF6B3FA0),
                         fontWeight: pw.FontWeight.bold)),
                 pw.Text("Rapport d'analyse vocale",
-                    style: pw.TextStyle(
+                    style: const pw.TextStyle(
                         fontSize: 14, color: PdfColors.grey600)),
               ]),
             ]),
@@ -65,12 +65,8 @@ class PdfExportService {
               ),
               pw.SizedBox(height: 12),
               pw.Text(result.userMessage,
-                  style: pw.TextStyle(
+                  style: const pw.TextStyle(
                       fontSize: 15, color: PdfColors.black, height: 1.5)),
-              pw.SizedBox(height: 8),
-              pw.Text('Confiance : ${result.confidence.toStringAsFixed(1)}%',
-                  style: pw.TextStyle(
-                      fontSize: 13, color: PdfColors.grey700, fontWeight: pw.FontWeight.normal)),
             ]),
           ),
           pw.SizedBox(height: 28),
@@ -89,7 +85,7 @@ class PdfExportService {
               border: pw.Border.all(color: PdfColor.fromInt(0xFFFFB74D), width: 1),
             ),
             child: pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
-              pw.Icon(pw.IconData(0xe002), color: PdfColor.fromInt(0xFF6B3FA0), size: 20),
+              pw.Text('\u26A0\uFE0F', style: const pw.TextStyle(fontSize: 16, color: PdfColors.orange)),
               pw.SizedBox(width: 8),
               pw.Expanded(
                 child: pw.Text(
