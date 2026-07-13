@@ -23,9 +23,9 @@ class _RecordingGuideScreenState extends State<RecordingGuideScreen> {
         "Tenez votre téléphone à environ 10 cm de votre bouche (la taille d'un "
         "stylo). Parlez normalement, sans crier ni chuchoter."),
     _Page("3. Dites 'Aaaa' pendant\n3 secondes",
-        "Appuyez sur le bouton rouge, puis dites 'Aaaaaaaaa...' sur un ton "
-        "régulier pendant 3 secondes. Gardez le même volume du début à la fin, "
-        "comme chez le médecin."),
+        "Appuyez sur le bouton rouge, puis dites « Aaaaa… », « Iiiii… » ou « Uuuuu… » "
+        "pendant 3 secondes, en gardant une voix stable. "
+        "Évitez de changer le volume ou l'intonation pendant l'enregistrement. "),
   ];
 
   // Images assets (à placer dans assets/images/)
