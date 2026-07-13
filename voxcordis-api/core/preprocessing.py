@@ -1,24 +1,55 @@
 import io
 import logging
+import threading
 
 import librosa
 import numpy as np
-import tensorflow as tf
-import tensorflow_hub as hub
 
 from core.config import TARGET_SR
 
 logger = logging.getLogger(__name__)
 
-# ── Constants ─────────────────────────────────────────────────────────
-MIN_SAMPLES = TARGET_SR       # 1 second minimum
-MAX_SAMPLES = TARGET_SR * 3   # 3 seconds maximum
-RMS_TARGET  = 0.1             # target RMS level
+MIN_SAMPLES = TARGET_SR
+MAX_SAMPLES = TARGET_SR * 3
+RMS_TARGET  = 0.1
 
-# ── Load YAMNet once at startup ───────────────────────────────────────
-logger.info("Loading YAMNet...")
-yamnet_model = hub.load("https://tfhub.dev/google/yamnet/1")
-logger.info("YAMNet loaded successfully.")
+_yamnet_model = None
+_tf = None
+_lock = threading.Lock()
+
+
+def _ensure_tf():
+    global _tf
+    if _tf is not None:
+        return _tf
+
+    with _lock:
+        if _tf is not None:
+            return _tf
+
+        import tensorflow as tf
+        _tf = tf
+
+    return _tf
+
+
+def _get_yamnet():
+    global _yamnet_model
+    if _yamnet_model is not None:
+        return _yamnet_model
+
+    with _lock:
+        if _yamnet_model is not None:
+            return _yamnet_model
+
+        tf = _ensure_tf()
+        import tensorflow_hub as hub
+
+        logger.info("Loading YAMNet...")
+        _yamnet_model = hub.load("https://tfhub.dev/google/yamnet/1")
+        logger.info("YAMNet loaded successfully.")
+
+    return _yamnet_model
 
 
 def rms_normalize(y: np.ndarray) -> np.ndarray:
@@ -44,7 +75,9 @@ def load_audio(file_bytes: bytes) -> np.ndarray:
 
 
 def extract_embedding(y: np.ndarray) -> np.ndarray:
+    tf = _ensure_tf()
+    yamnet = _get_yamnet()
     waveform = tf.cast(y, tf.float32)
-    _, embeddings, _ = yamnet_model(waveform)
+    _, embeddings, _ = yamnet(waveform)
     mean_emb = tf.reduce_mean(embeddings, axis=0).numpy()
     return mean_emb.reshape(1, -1)
