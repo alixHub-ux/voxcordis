@@ -41,6 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
             margin: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
+              // ignore: deprecated_member_use
               color: Colors.white.withOpacity(0.25),
             ),
             child: const Icon(Icons.chevron_left, color: Colors.white, size: 22),
@@ -78,7 +79,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       end: Alignment.bottomCenter,
                       colors: [
                         AppColors.primary,
+                        // ignore: deprecated_member_use
                         AppColors.primary.withOpacity(0.3),
+                        // ignore: deprecated_member_use
                         AppColors.primary.withOpacity(0.0),
                       ],
                       stops: const [0.0, 0.3, 1.0],
@@ -132,6 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       margin: const EdgeInsets.only(bottom: 16),
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
+                        // ignore: deprecated_member_use
                         color: Colors.red.shade900.withOpacity(0.4),
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(color: Colors.red.shade300),

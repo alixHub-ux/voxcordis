@@ -54,7 +54,7 @@ class _SplashScreenState extends State<SplashScreen>
                 const Spacer(flex: 3),
 
                 // Logo cœur lignes blanches
-                HeartLogo(size: 160, color: Colors.white),
+                const HeartLogo(size: 160, color: Colors.white),
                 const SizedBox(height: 32),
 
                 // Wordmark image (VOXCORDIS)
@@ -67,6 +67,7 @@ class _SplashScreenState extends State<SplashScreen>
                 Text(
                   'La Voix Du Coeur',
                   style: TextStyle(
+                    // ignore: deprecated_member_use
                     color: Colors.white.withOpacity(0.85),
                     fontSize: 16,
                     fontWeight: FontWeight.w300,

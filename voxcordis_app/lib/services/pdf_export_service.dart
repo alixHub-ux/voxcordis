@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -21,7 +20,7 @@ class PdfExportService {
                 pw.Text('Voxcordis',
                     style: pw.TextStyle(
                         fontSize: 24,
-                        color: PdfColor.fromInt(0xFF6B3FA0),
+                        color: const PdfColor.fromInt(0xFF6B3FA0),
                         fontWeight: pw.FontWeight.bold)),
                 pw.Text("Rapport d'analyse vocale",
                     style: const pw.TextStyle(
@@ -80,9 +79,9 @@ class PdfExportService {
           pw.Container(
             padding: const pw.EdgeInsets.all(12),
             decoration: pw.BoxDecoration(
-              color: PdfColor.fromInt(0xFFFFF3E0),
+              color: const PdfColor.fromInt(0xFFFFF3E0),
               borderRadius: const pw.BorderRadius.all(pw.Radius.circular(8)),
-              border: pw.Border.all(color: PdfColor.fromInt(0xFFFFB74D), width: 1),
+              border: pw.Border.all(color: const PdfColor.fromInt(0xFFFFB74D), width: 1),
             ),
             child: pw.Row(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
               pw.Text('\u26A0\uFE0F', style: const pw.TextStyle(fontSize: 16, color: PdfColors.orange)),
@@ -108,22 +107,22 @@ class PdfExportService {
   static PdfColor _riskColor(RiskLevel level) {
     switch (level) {
       case RiskLevel.low:
-        return PdfColor.fromInt(0xFF4CAF50);
+        return const PdfColor.fromInt(0xFF4CAF50);
       case RiskLevel.moderate:
-        return PdfColor.fromInt(0xFFFF9800);
+        return const PdfColor.fromInt(0xFFFF9800);
       case RiskLevel.high:
-        return PdfColor.fromInt(0xFFF44336);
+        return const PdfColor.fromInt(0xFFF44336);
     }
   }
 
   static PdfColor _bgColor(RiskLevel level) {
     switch (level) {
       case RiskLevel.low:
-        return PdfColor.fromInt(0xFFE8F5E9);
+        return const PdfColor.fromInt(0xFFE8F5E9);
       case RiskLevel.moderate:
-        return PdfColor.fromInt(0xFFFFF3E0);
+        return const PdfColor.fromInt(0xFFFFF3E0);
       case RiskLevel.high:
-        return PdfColor.fromInt(0xFFFFEBEE);
+        return const PdfColor.fromInt(0xFFFFEBEE);
     }
   }
 }
