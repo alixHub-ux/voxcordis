@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -22,12 +23,7 @@ import 'screens/profile/profile_screen.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Mode local pour le développement (debug)
-  if (bool.hasEnvironment('USE_LOCAL_BACKEND')
-      ? const bool.fromEnvironment('USE_LOCAL_BACKEND')
-      : false) {
-    BackendService.useLocal(true);
-  }
+  BackendService.useLocal(kDebugMode); // debug → local, release → distant
 
   runApp(const VoxcordisApp());
 }

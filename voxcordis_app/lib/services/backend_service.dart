@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../models/analysis_result.dart';
 
 /// Communication avec le backend FastAPI Voxcordis.
 class BackendService {
   static const String _prodBaseUrl = 'https://voxcordis-api.onrender.com';
-  static const String _devBaseUrl = 'http://localhost:7860';
+  static const String _devBaseUrl = 'http://192.168.100.139:7860';
 
   static bool _useLocal = false;
 
@@ -29,11 +30,14 @@ class BackendService {
   /// Vérifie si le backend est joignable
   Future<bool> isOnline() async {
     try {
+      debugPrint('[Backend] isOnline → $_baseUrl');
       final res = await http
           .get(Uri.parse('$_baseUrl/'))
-          .timeout(const Duration(seconds: 30));
+          .timeout(const Duration(seconds: 5));
+      debugPrint('[Backend] isOnline → ${res.statusCode}');
       return res.statusCode == 200;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[Backend] isOnline → ERROR: $e');
       return false;
     }
   }

@@ -38,24 +38,36 @@ class AnalysisProvider extends ChangeNotifier {
     return true;
   }
 
-  Future<void> stopAndAnalyze() async {
+  /// Arrête l'enregistrement et retourne le chemin du fichier WAV.
+  Future<String?> stopRecording() async {
+    final wavPath = await _audio.stopRecording();
+    return wavPath;
+  }
+
+  /// Lance l'analyse (online si possible, sinon offline).
+  /// Appelé depuis l'écran de loading.
+  Future<void> startAnalysis(String wavPath) async {
     _state = AnalysisState.analyzing;
     _errorMsg = null;
     notifyListeners();
 
     try {
-      final wavPath = await _audio.stopRecording();
-      if (wavPath == null) throw Exception('Fichier audio introuvable.');
-
       final online = await backend.isOnline();
-      final AnalysisResult result;
+
+      late final AnalysisResult result;
+      late final bool isSynced;
       if (online && backend.token != null) {
-        result = await backend.predictOnline(wavPath);
+        try {
+          result = await backend.predictOnline(wavPath);
+          isSynced = true;
+        } catch (_) {
+          result = await _local.runInference(wavPath);
+          isSynced = false;
+        }
       } else {
         result = await _local.runInference(wavPath);
+        isSynced = false;
       }
-
-      final isSynced = online && backend.token != null;
       final id = await DatabaseHelper.instance.insertResult(result);
       _lastResult = AnalysisResult(
         id: id,

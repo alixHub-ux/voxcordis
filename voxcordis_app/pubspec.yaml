@@ -18,8 +18,7 @@ dependencies:
   # Audio : enregistrement WAV (version corrigee)
   record: ^6.0.0
 
-  # TFLite (YAMNet + classificateur) - VERSION CORRIGEE
-  tflite_flutter: ^0.11.0
+  # TFLite — via plugin Android natif (Java API)
 
   # SQLite : historique local
   sqflite: ^2.3.3+1

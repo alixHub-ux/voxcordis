@@ -14,6 +14,9 @@ class AnalysisLoadingScreen extends StatefulWidget {
 class _AnalysisLoadingScreenState extends State<AnalysisLoadingScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _pulse;
+  bool _analysisStarted = false;
+  DateTime? _analysisStartTime;
+  static const _minDisplayMs = 1500;
 
   @override
   void initState() {
@@ -24,16 +27,39 @@ class _AnalysisLoadingScreenState extends State<AnalysisLoadingScreen>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_analysisStarted) {
+      _analysisStarted = true;
+      _analysisStartTime = DateTime.now();
+      final wavPath = ModalRoute.of(context)?.settings.arguments as String?;
+      if (wavPath != null) {
+        context.read<AnalysisProvider>().startAnalysis(wavPath);
+      }
+    }
+  }
+
+  Future<void> _navigateAfterMinDelay(String routeName) async {
+    final elapsed = DateTime.now().difference(_analysisStartTime!).inMilliseconds;
+    if (elapsed < _minDisplayMs) {
+      await Future.delayed(Duration(milliseconds: _minDisplayMs - elapsed));
+    }
+    if (mounted) {
+      Navigator.pushReplacementNamed(context, routeName);
+    }
+  }
+
+  @override
   void dispose() { _pulse.dispose(); super.dispose(); }
 
   @override
   Widget build(BuildContext context) {
     final analysis = context.watch<AnalysisProvider>();
 
-    // Navigation selon l'état
+    // Navigation selon l'état (avec délai minimum)
     if (analysis.state == AnalysisState.done) {
       WidgetsBinding.instance.addPostFrameCallback((_) =>
-          Navigator.pushReplacementNamed(context, AppRoutes.result));
+          _navigateAfterMinDelay(AppRoutes.result));
     } else if (analysis.state == AnalysisState.error) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -75,10 +75,18 @@ class _RecordingScreenState extends State<RecordingScreen>
 
   Future<void> _stopAndAnalyze() async {
     final analysis = context.read<AnalysisProvider>();
-    await analysis.stopAndAnalyze();
+    final wavPath = await analysis.stopRecording();
     _isProcessing = false;
-    if (mounted) {
-      Navigator.pushReplacementNamed(context, AppRoutes.analysisLoading);
+    if (mounted && wavPath != null) {
+      Navigator.pushReplacementNamed(
+        context,
+        AppRoutes.analysisLoading,
+        arguments: wavPath,
+      );
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Fichier audio introuvable.')),
+      );
     }
   }
 
