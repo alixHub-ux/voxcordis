@@ -15,13 +15,17 @@ class _RecordingGuideScreenState extends State<RecordingGuideScreen> {
   int _page = 0;
 
   static const _pages = [
-    _Page('Trouvez un endroit calme',
-        'Éloignez-vous du bruit, de la télévision ou de la circulation.'),
-    _Page('Gardez votre téléphone\nprès de vous.',
-        'Gardez le micro à environ 10 cm de votre bouche.'),
-    _Page('Maintenez une voyelle\npendant 03 secondes.',
-        "Pour commencer l'enregistrement, maintenez la voyelle 'a' (ou 'i', 'u') "
-        "pendant au moins 3 secondes, en prononçant un son long et soutenu comme 'aaaaaaaaaa'..."),
+    _Page('1. Mettez-vous au calme',
+        "Installez-vous dans une pièce silencieuse, loin de la télévision, "
+        "de la musique ou des bruits de circulation. Cela permet à l'application "
+        "de mieux analyser votre voix."),
+    _Page('2. Approchez le téléphone\nde votre bouche',
+        "Tenez votre téléphone à environ 10 cm de votre bouche (la taille d'un "
+        "stylo). Parlez normalement, sans crier ni chuchoter."),
+    _Page("3. Dites 'Aaaa' pendant\n3 secondes",
+        "Appuyez sur le bouton rouge, puis dites 'Aaaaaaaaa...' sur un ton "
+        "régulier pendant 3 secondes. Gardez le même volume du début à la fin, "
+        "comme chez le médecin."),
   ];
 
   // Images assets (à placer dans assets/images/)

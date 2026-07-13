@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:voxcordis_app/core/routes/app_routes.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/routes/app_routes.dart';
 import '../../models/analysis_result.dart';
 import '../../providers/analysis_provider.dart';
 import '../../widgets/bottom_nav.dart';
@@ -44,6 +44,14 @@ class _HistoryScreenState extends State<HistoryScreen> {
         ),
         title: const Text('Historique',
             style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w600)),
+        actions: [
+          if (context.watch<AnalysisProvider>().history.isNotEmpty)
+            IconButton(
+              onPressed: () => _confirmClearAll(context),
+              icon: const Icon(Icons.delete_sweep_outlined, color: AppColors.riskHigh),
+              tooltip: 'Tout supprimer',
+            ),
+        ],
       ),
       body: Column(
         children: [
@@ -102,6 +110,21 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           Text(r.userMessage,
                               style: const TextStyle(fontSize: 15,
                                   color: AppColors.textPrimary, fontWeight: FontWeight.w500)),
+                          const SizedBox(height: 10),
+                          Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                            IconButton(
+                              icon: const Icon(Icons.picture_as_pdf_outlined,
+                                  color: AppColors.primary, size: 22),
+                              tooltip: 'Exporter en PDF',
+                              onPressed: () => context.read<AnalysisProvider>().exportPdf(r),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete_outline,
+                                  color: AppColors.riskHigh, size: 22),
+                              tooltip: 'Supprimer',
+                              onPressed: () => _confirmDelete(context, r),
+                            ),
+                          ]),
                         ]),
                       );
                     },
@@ -111,6 +134,46 @@ class _HistoryScreenState extends State<HistoryScreen> {
       ),
       bottomNavigationBar: const VoxcordisBottomNav(currentIndex: 2),
     );
+  }
+
+  Future<void> _confirmDelete(BuildContext context, AnalysisResult r) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Supprimer cette analyse ?'),
+        content: Text('${r.riskLabel} — ${DateFormat('dd/MM/yyyy').format(r.date)}'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Annuler')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Supprimer', style: TextStyle(color: AppColors.riskHigh)),
+          ),
+        ],
+      ),
+    );
+    if (ok == true && context.mounted) {
+      if (r.id != null) context.read<AnalysisProvider>().deleteResult(r.id!);
+    }
+  }
+
+  Future<void> _confirmClearAll(BuildContext context) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Tout supprimer ?'),
+        content: const Text('Cette action est irréversible.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Annuler')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Tout supprimer', style: TextStyle(color: AppColors.riskHigh)),
+          ),
+        ],
+      ),
+    );
+    if (ok == true && context.mounted) {
+      context.read<AnalysisProvider>().deleteAllResults();
+    }
   }
 }
 

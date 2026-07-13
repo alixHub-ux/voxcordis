@@ -136,4 +136,14 @@ class DatabaseHelper {
     await db.update('analysis_results', {'isSynced': 1},
         where: 'id = ?', whereArgs: [id]);
   }
+
+  Future<void> deleteResult(int id) async {
+    final db = await database;
+    await db.delete('analysis_results', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<void> deleteAllResults() async {
+    final db = await database;
+    await db.delete('analysis_results');
+  }
 }

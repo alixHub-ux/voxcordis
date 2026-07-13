@@ -3,6 +3,7 @@ import '../models/analysis_result.dart';
 import '../services/audio_service.dart';
 import '../services/backend_service.dart';
 import '../services/inference_service.dart';
+import '../services/pdf_export_service.dart';
 import '../database/database_helper.dart';
 
 enum AnalysisState { idle, recording, analyzing, done, error }
@@ -93,6 +94,22 @@ class AnalysisProvider extends ChangeNotifier {
   Future<void> loadHistory() async {
     _history = await DatabaseHelper.instance.getAllResults();
     notifyListeners();
+  }
+
+  Future<void> deleteResult(int id) async {
+    await DatabaseHelper.instance.deleteResult(id);
+    _history.removeWhere((r) => r.id == id);
+    notifyListeners();
+  }
+
+  Future<void> deleteAllResults() async {
+    await DatabaseHelper.instance.deleteAllResults();
+    _history.clear();
+    notifyListeners();
+  }
+
+  Future<void> exportPdf(AnalysisResult result) async {
+    await PdfExportService.export(result);
   }
 
   void reset() {
