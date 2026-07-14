@@ -45,7 +45,7 @@ class AnalysisProvider extends ChangeNotifier {
     return wavPath;
   }
 
-  /// Lance l'analyse (online si possible, sinon offline).
+  /// Lance l'analyse toujours via TFLite, puis synchronise si connecté.
   /// Appelé depuis l'écran de loading.
   Future<void> startAnalysis(String wavPath) async {
     _state = AnalysisState.analyzing;
@@ -53,22 +53,10 @@ class AnalysisProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final online = await backend.isOnline();
+      // 1. Toujours TFLite — pas de branchement online/offline
+      final result = await _local.runInference(wavPath);
 
-      late final AnalysisResult result;
-      late final bool isSynced;
-      if (online && backend.token != null) {
-        try {
-          result = await backend.predictOnline(wavPath);
-          isSynced = true;
-        } catch (_) {
-          result = await _local.runInference(wavPath);
-          isSynced = false;
-        }
-      } else {
-        result = await _local.runInference(wavPath);
-        isSynced = false;
-      }
+      // 2. Sauvegarde locale immédiate
       final id = await DatabaseHelper.instance.insertResult(result);
       _lastResult = AnalysisResult(
         id: id,
@@ -76,19 +64,42 @@ class AnalysisProvider extends ChangeNotifier {
         predictedClass: result.predictedClass,
         confidence: result.confidence,
         riskLevel: result.riskLevel,
-        isSynced: isSynced,
+        isSynced: false,
         modelVersion: result.modelVersion,
       );
 
-      if (isSynced) await DatabaseHelper.instance.markSynced(id);
-      await _audio.deleteTemp();
+      // 3. Navigation immédiate vers le résultat
       _state = AnalysisState.done;
+      notifyListeners();
+
+      // 4. Sync arrière-plan si connecté (non-bloquant pour l'utilisateur)
+      if (backend.token != null) {
+        _syncAfterAnalysis(result, id);
+      }
+
+      // 5. Nettoyage fichier temporaire
+      await _audio.deleteTemp();
 
     } catch (e) {
       _errorMsg = e.toString().replaceFirst('Exception: ', '');
       _state = AnalysisState.error;
+      notifyListeners();
     }
-    notifyListeners();
+  }
+
+  /// Synchronise le résultat en arrière-plan après navigation
+  Future<void> _syncAfterAnalysis(AnalysisResult result, int dbId) async {
+    try {
+      final online = await backend.isOnline();
+      if (online) {
+        await backend.syncResult(result);
+        await DatabaseHelper.instance.markSynced(dbId);
+        _lastResult = _lastResult?.copyWith(isSynced: true);
+        notifyListeners();
+      }
+    } catch (_) {
+      // sync échoué → reste local, pas de blocage
+    }
   }
 
   Future<void> loadHistory() async {

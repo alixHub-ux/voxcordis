@@ -36,7 +36,10 @@ class _LoginScreenState extends State<LoginScreen> {
         elevation: 0,
         titleSpacing: 0,
         leading: GestureDetector(
-          onTap: () => Navigator.pushReplacementNamed(context, AppRoutes.splash),
+          onTap: () {
+            context.read<AuthProvider>().clearError();
+            Navigator.pushReplacementNamed(context, AppRoutes.splash);
+          },
           child: Container(
             margin: const EdgeInsets.all(8),
             decoration: BoxDecoration(
@@ -176,8 +179,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             style: TextStyle(color: Colors.white70, fontSize: 14)),
                         const SizedBox(height: 4),
                         GestureDetector(
-                          onTap: () => Navigator.pushReplacementNamed(
-                              context, AppRoutes.register),
+                          onTap: () {
+                            context.read<AuthProvider>().clearError();
+                            Navigator.pushReplacementNamed(
+                                context, AppRoutes.register);
+                          },
                           child: const Text("S'inscrire",
                               style: TextStyle(color: Color(0xFFB8960C),
                                   fontWeight: FontWeight.w700, fontSize: 16)),

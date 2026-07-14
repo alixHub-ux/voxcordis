@@ -17,6 +17,36 @@ class AuthProvider extends ChangeNotifier {
   String? get error => _error;
   bool get isLoggedIn => _currentUser != null;
 
+  void clearError() {
+    _error = null;
+    notifyListeners();
+  }
+
+  void _autoClearError() {
+    Future.delayed(const Duration(seconds: 4), () {
+      if (_error != null) {
+        _error = null;
+        notifyListeners();
+      }
+    });
+  }
+
+  /// Traduit les messages d'erreur anglais du serveur en français
+  String _translateError(String msg) {
+    const map = {
+      'Incorrect email or password': 'Email ou mot de passe incorrect.',
+      'Email already registered': 'Un compte existe déjà avec cet email.',
+      'Email already exists': 'Un compte existe déjà avec cet email.',
+      'User not found': 'Utilisateur introuvable.',
+      'Not authenticated': 'Non authentifié.',
+      'Could not validate credentials': 'Impossible de valider vos identifiants.',
+    };
+    for (final entry in map.entries) {
+      if (msg.contains(entry.key)) return entry.value;
+    }
+    return msg; // garder le message original si pas de traduction
+  }
+
   /// Restaure la session au démarrage de l'app.
   /// Cherche un utilisateur en SQLite, tente un re-login online
   /// pour obtenir un token frais, ou reste en offline.
@@ -44,6 +74,7 @@ class AuthProvider extends ChangeNotifier {
     if (email.isEmpty || password.isEmpty) {
       _error = 'Veuillez remplir tous les champs.';
       notifyListeners();
+      _autoClearError();
       return false;
     }
 
@@ -80,7 +111,8 @@ class AuthProvider extends ChangeNotifier {
         return true;
       }
     } catch (e) {
-      final msg = e.toString().replaceFirst('Exception: ', '');
+      final msg = _translateError(
+          e.toString().replaceFirst('Exception: ', ''));
       // Erreur d'authentification réelle (pas offline) → bloquer
       if (!msg.contains('SocketException') &&
           !msg.contains('TimeoutException') &&
@@ -88,6 +120,7 @@ class AuthProvider extends ChangeNotifier {
         _error = msg;
         _isLoading = false;
         notifyListeners();
+        _autoClearError();
         return false;
       }
     }
@@ -99,12 +132,14 @@ class AuthProvider extends ChangeNotifier {
         _error = 'Aucun compte trouvé. Vérifiez votre connexion internet.';
         _isLoading = false;
         notifyListeners();
+        _autoClearError();
         return false;
       }
       if (user.password != password) {
         _error = 'Mot de passe incorrect.';
         _isLoading = false;
         notifyListeners();
+        _autoClearError();
         return false;
       }
       _currentUser = user;
@@ -115,6 +150,7 @@ class AuthProvider extends ChangeNotifier {
       _error = 'Erreur : ${e.toString()}';
       _isLoading = false;
       notifyListeners();
+      _autoClearError();
       return false;
     }
   }
@@ -129,6 +165,7 @@ class AuthProvider extends ChangeNotifier {
         email.isEmpty || password.isEmpty) {
       _error = 'Veuillez remplir tous les champs.';
       notifyListeners();
+      _autoClearError();
       return false;
     }
 
@@ -141,6 +178,7 @@ class AuthProvider extends ChangeNotifier {
       _error = 'Un compte existe déjà avec cet email.';
       _isLoading = false;
       notifyListeners();
+      _autoClearError();
       return false;
     }
 
@@ -157,13 +195,15 @@ class AuthProvider extends ChangeNotifier {
         await backend.login(email: email, password: password);
       }
     } catch (e) {
-      final msg = e.toString().replaceFirst('Exception: ', '');
+      final msg = _translateError(
+          e.toString().replaceFirst('Exception: ', ''));
       if (!msg.contains('SocketException') &&
           !msg.contains('TimeoutException') &&
           !msg.contains('Connection')) {
         _error = msg;
         _isLoading = false;
         notifyListeners();
+        _autoClearError();
         return false;
       }
     }
@@ -191,6 +231,7 @@ class AuthProvider extends ChangeNotifier {
       _error = 'Erreur inscription : ${e.toString()}';
       _isLoading = false;
       notifyListeners();
+      _autoClearError();
       return false;
     }
   }

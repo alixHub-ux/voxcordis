@@ -75,6 +75,27 @@ class AnalysisResult {
     }
   }
 
+  // ---------- CopyWith ----------
+
+  AnalysisResult copyWith({
+    int? id,
+    DateTime? date,
+    int? predictedClass,
+    double? confidence,
+    RiskLevel? riskLevel,
+    bool? isSynced,
+    String? modelVersion,
+  }) =>
+      AnalysisResult(
+        id: id ?? this.id,
+        date: date ?? this.date,
+        predictedClass: predictedClass ?? this.predictedClass,
+        confidence: confidence ?? this.confidence,
+        riskLevel: riskLevel ?? this.riskLevel,
+        isSynced: isSynced ?? this.isSynced,
+        modelVersion: modelVersion ?? this.modelVersion,
+      );
+
   // ---------- SQLite ----------
 
   Map<String, dynamic> toMap() => {

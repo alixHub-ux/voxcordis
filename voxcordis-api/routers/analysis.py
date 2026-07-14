@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, File, UploadFile, HTTPException
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 import json
 import logging
 
@@ -10,6 +11,14 @@ from core.model import predict
 from core.risk import build_response
 from core.auth import get_current_user
 from core.config import MAX_FILE_SIZE, ALLOWED_FORMATS
+
+
+class SyncRequest(BaseModel):
+    class_id: int
+    confidence: float
+    probabilities: list[float] | None = None
+    model_version: str | None = None
+    date: str | None = None
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -66,6 +75,29 @@ async def predict_endpoint(file: UploadFile = File(...), session: Session = Depe
 def history(session: Session = Depends(get_session), current_user = Depends(get_current_user)):
     results = session.query(Analysis).filter(Analysis.user_id == current_user.id).order_by(Analysis.created_at.desc()).all()
     return [{"id": r.id, "class_id": r.class_id, "confidence": r.confidence, "probabilities": json.loads(r.probabilities), "created_at": r.created_at.isoformat()} for r in results]
+
+
+@router.post("/sync")
+def sync_result(
+    body: SyncRequest,
+    session: Session = Depends(get_session),
+    current_user = Depends(get_current_user),
+):
+    analysis = Analysis(
+        user_id=current_user.id,
+        class_id=body.class_id,
+        confidence=body.confidence,
+        probabilities=json.dumps(body.probabilities or [])
+    )
+    session.add(analysis)
+    session.commit()
+    session.refresh(analysis)
+    return {
+        "status": "synced",
+        "id": analysis.id,
+        "class_id": body.class_id,
+        "confidence": body.confidence,
+    }
 
 
 @router.get("/{analysis_id}")

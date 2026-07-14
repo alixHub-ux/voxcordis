@@ -70,8 +70,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         // Header
                         Row(children: [
                           GestureDetector(
-                            onTap: () => Navigator.pushReplacementNamed(
-                                context, AppRoutes.login),
+                            onTap: () {
+                              context.read<AuthProvider>().clearError();
+                              Navigator.pushReplacementNamed(
+                                  context, AppRoutes.login);
+                            },
                             child: Container(
                               width: 34, height: 34,
                               decoration: const BoxDecoration(
