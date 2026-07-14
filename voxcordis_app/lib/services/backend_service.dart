@@ -88,34 +88,24 @@ class BackendService {
     return token;
   }
 
-  /// Envoie le fichier WAV et retourne le résultat d'analyse
-  Future<AnalysisResult> predictOnline(String wavPath) async {
+  /// Synchronise un résultat d'analyse local vers le backend
+  Future<void> syncResult(AnalysisResult result) async {
     if (_token == null) throw Exception('Non authentifié.');
 
-    final uri = Uri.parse('$_baseUrl/analysis/predict');
-    final request = http.MultipartRequest('POST', uri)
-      ..headers['Authorization'] = 'Bearer $_token'
-      ..files.add(await http.MultipartFile.fromPath('file', wavPath));
+    final res = await http.post(
+      Uri.parse('$_baseUrl/analysis/sync'),
+      headers: _authHeaders,
+      body: json.encode({
+        'class_id': result.predictedClass,
+        'confidence': result.confidence,
+        'model_version': result.modelVersion,
+        'date': result.date.toIso8601String(),
+      }),
+    ).timeout(const Duration(seconds: 30));
 
-    final streamed = await request.send()
-        .timeout(const Duration(seconds: 90));
-    final body = await streamed.stream.bytesToString();
-
-    if (streamed.statusCode != 200) {
-      final err = json.decode(body);
-      throw Exception(err['detail'] ?? 'Erreur analyse');
+    if (res.statusCode != 200 && res.statusCode != 201) {
+      throw Exception('Sync failed: ${res.statusCode}');
     }
-
-    final data = json.decode(body) as Map<String, dynamic>;
-
-    return AnalysisResult(
-      date: DateTime.now(),
-      predictedClass: data['predicted_class'] ?? 0,
-      confidence: (data['confidence'] as num?)?.toDouble() ?? 0.0,
-      riskLevel: RiskLevel.values[data['risk_level_index'] ?? 0],
-      isSynced: true,
-      modelVersion: data['model_version'],
-    );
   }
 
   /// Récupère l'historique depuis le backend

@@ -13,5 +13,6 @@ soundfile==0.12.1
 setuptools==67.8.0
 
 sqlalchemy==1.4.41
+psycopg2-binary==2.9.9
 python-jose[cryptography]==3.3.0
 bcrypt==4.0.1
