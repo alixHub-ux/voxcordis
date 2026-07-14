@@ -11,23 +11,27 @@ engine = create_engine(DATABASE_URL, echo=False, connect_args=connect_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def _schema_version_table_exists(db):
-    try:
-        db.execute(text("SELECT 1 FROM _schema_version LIMIT 1"))
-        return True
-    except Exception:
-        return False
+_IS_SQLITE = DATABASE_URL.startswith("sqlite")
+
+SCHEMA_VERSION = 2
+
+
+def _column_exists(db, table, column):
+    if _IS_SQLITE:
+        rows = db.execute(text(f"PRAGMA table_info({table})")).all()
+        return any(r[1] == column for r in rows)
+    else:
+        row = db.execute(text(
+            "SELECT 1 FROM information_schema.columns "
+            "WHERE table_name = :t AND column_name = :c"
+        ), {"t": table, "c": column}).first()
+        return row is not None
 
 
 def _ensure_schema_version_table(db):
-    if DATABASE_URL.startswith("sqlite"):
-        db.execute(text(
-            "CREATE TABLE IF NOT EXISTS _schema_version (version INTEGER NOT NULL)"
-        ))
-    else:
-        db.execute(text(
-            "CREATE TABLE IF NOT EXISTS _schema_version (version INTEGER NOT NULL)"
-        ))
+    db.execute(text(
+        "CREATE TABLE IF NOT EXISTS _schema_version (version INTEGER NOT NULL)"
+    ))
     db.commit()
 
 
@@ -38,22 +42,17 @@ def _get_schema_version(db):
 
 def _set_schema_version(db, version):
     db.execute(text("DELETE FROM _schema_version"))
-    db.execute(text(f"INSERT INTO _schema_version (version) VALUES ({version})"))
+    db.execute(text("INSERT INTO _schema_version (version) VALUES (:v)"), {"v": version})
     db.commit()
-
-
-SCHEMA_VERSION = 2
 
 
 def _migrate(db):
     _ensure_schema_version_table(db)
     version = _get_schema_version(db)
-    if version < 2:
+    if version < SCHEMA_VERSION:
         for col in ("first_name", "last_name"):
-            try:
+            if not _column_exists(db, "user", col):
                 db.execute(text(f"ALTER TABLE \"user\" ADD COLUMN {col} TEXT NOT NULL DEFAULT ''"))
-            except Exception:
-                pass
         _set_schema_version(db, SCHEMA_VERSION)
         logger.info("Schema migrated to version %d", SCHEMA_VERSION)
 
