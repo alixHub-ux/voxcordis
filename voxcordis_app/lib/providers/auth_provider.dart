@@ -110,19 +110,9 @@ class AuthProvider extends ChangeNotifier {
         notifyListeners();
         return true;
       }
-    } catch (e) {
-      final msg = _translateError(
-          e.toString().replaceFirst('Exception: ', ''));
-      // Erreur d'authentification réelle (pas offline) → bloquer
-      if (!msg.contains('SocketException') &&
-          !msg.contains('TimeoutException') &&
-          !msg.contains('Connection')) {
-        _error = msg;
-        _isLoading = false;
-        notifyListeners();
-        _autoClearError();
-        return false;
-      }
+    } catch (_) {
+      // Échec backend (timeout, cold start, erreur serveur…)
+      // → fallback sur SQLite local
     }
 
     // ── Mode offline : SQLite ──────────────────────────────────────────
