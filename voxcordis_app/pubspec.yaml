@@ -1,0 +1,72 @@
+name: voxcordis_app
+description: Application mobile IA de depistage cardiovasculaire par analyse vocale.
+publish_to: none
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.9.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # State management
+  provider: ^6.1.2
+
+  # Audio : enregistrement WAV (version corrigee)
+  record: ^6.0.0
+
+  # TFLite — via plugin Android natif (Java API)
+
+  # SQLite : historique local
+  sqflite: ^2.3.3+1
+  path: ^1.9.0
+
+  # Permissions micro
+  permission_handler: ^11.3.1
+
+  # HTTP : mode online / FastAPI
+  http: ^1.2.1
+
+  # Date en francais
+  intl: ^0.20.2
+
+  # Stockage temporaire
+  path_provider: ^2.1.3
+
+  # PDF export
+  pdf: ^3.11.0
+  printing: ^5.13.1
+
+  flutter_svg: ^2.0.10+1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.1
+
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/models/yamnet_quantized.tflite
+    - assets/models/voxcordis_model.tflite
+    - assets/models/scaler_params.json
+    - assets/images/wordmark.png
+    - assets/images/login_doctor.png
+    - assets/images/guide_calm.png
+    - assets/images/guide_phone.png
+    - assets/images/guide_voice.png
+    - assets/images/logo_voxcordis.svg
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/voxcordisIcon.png"
+  min_sdk_android: 21
+  web:
+    generate: false
