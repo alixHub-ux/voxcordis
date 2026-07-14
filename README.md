@@ -173,9 +173,9 @@ adb reverse tcp:7860 tcp:7860
 
 ## Déploiement
 
-### Backend (Render / Railway)
+### Backend (Render)
 
-Le backend est déployé sur Render (ou Railway). La branche `backend` est celle déployée.
+Le backend est déployé sur Render. La branche `backend` est celle déployée.
 
 ```bash
 git checkout backend
